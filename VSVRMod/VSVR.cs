@@ -1,272 +1,79 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MelonLoader;
 using UnityEngine;
-using UnityEngine.UI;
-using System.Reflection;
-using System.Windows.Forms;
-using UnityEngine.XR;
-using UnityEngine.XR.Management;
 
 namespace VSVRMod
 {
     public class VSVR : MelonMod
     {
-        public GameObject primary;
-        public Camera primaryCamera;
+        private GameObject primaryCameraGameObject;
+        private Camera primaryCamera;
 
-        public GameObject world;
-        public Camera worldCam;
+        private GameObject worldCameraGameObject;
+        private Camera worldCamera;
 
-        public GameObject canvas;
-        public Canvas canvas2;
-        public RectTransform canvasrect;
-        public GraphicRaycaster canvas3;
+        private GameObject UICanvasGameObject;
+        private Canvas UICanvas;
 
-        public GameObject fadecanvas;
-        public Canvas fadecanvas2;
-        public GraphicRaycaster fadecanvas3;
+        private GameObject fadeCanvasGameObject;
+        private Canvas fadeCanvas;
 
-        public GameObject headfollower;
-        public PlayMakerFSM headResetter;
+        private GameObject headfollower;
+        private PlayMakerFSM headResetter;
 
-        VRGestureRecognizer vrGestureRecognizer;
+        private VRGestureRecognizer vrGestureRecognizer;
 
-        PlayMakerFSM OkButton;
-        PlayMakerFSM Ok2Button;
-        PlayMakerFSM Done1Button;
-        PlayMakerFSM Done2Button;
-        PlayMakerFSM YesButton;
-        PlayMakerFSM ReadyButton;
-        PlayMakerFSM ThankYouButton;
-        PlayMakerFSM ThankYou2Button;
-        PlayMakerFSM ConfirmButton;
-        PlayMakerFSM GoodButton;
-        PlayMakerFSM AcceptButton;
+        private readonly List<String> nodButtonNames = new List<string> { "Ok", "Ok2", "Done1", "Done2", "Yes", "Ready", "Thank You", "Thank You2", "Confirm", "Good", "Accept" };
+        private readonly List<String> headshakButtonNames = new List<string> { "No", "Failed", "Failed2", "Failed3", "Failed4", "Disobey", "Disobey2", "Disobey3", "Disobeyed", "Disobeyed2", "Bad", "Decline", "Refuse" };
 
-        PlayMakerFSM NoButton;
-        PlayMakerFSM FailedButton;
-        PlayMakerFSM Failed2Button;
-        PlayMakerFSM Failed3Button;
-        PlayMakerFSM Failed4Button;
-        PlayMakerFSM DisobeyButton;
-        PlayMakerFSM Disobey2Button;
-        PlayMakerFSM Disobey3Button;
-        PlayMakerFSM DisobeyedButton;
-        PlayMakerFSM Disobeyed2Button;
-        PlayMakerFSM BadButton;
-        PlayMakerFSM DeclineButton;
-        PlayMakerFSM RefuseButton;
-
-        List<PlayMakerFSM> nodButtons = new List<PlayMakerFSM>();
-        List<PlayMakerFSM> headshakeButtons = new List<PlayMakerFSM>();
-
-        List<XRInputSubsystem> subsystems = new List<XRInputSubsystem>();
-
-        private void findButtons()
-        {
-            LoggerInstance.Msg($"-Ok Button");
-            OkButton = GameObject.Find("GeneralCanvas/EventManager/Buttons/Ok/DoneBG/DoneText/Collider").GetComponent<PlayMakerFSM>();
-            nodButtons.Add(OkButton);
-
-            LoggerInstance.Msg($"-Ok2 Button");
-            Ok2Button = GameObject.Find("GeneralCanvas/EventManager/Buttons/Ok2/DoneBG/DoneText/Collider").GetComponent<PlayMakerFSM>();
-            nodButtons.Add(Ok2Button);
-
-            LoggerInstance.Msg($"-Done1 Button");
-            Done1Button = GameObject.Find("GeneralCanvas/EventManager/Buttons/Done1/DoneBG/DoneText/Collider").GetComponent<PlayMakerFSM>();
-            nodButtons.Add(Done1Button);
-
-            LoggerInstance.Msg($"-Done2 Button");
-            Done2Button = GameObject.Find("GeneralCanvas/EventManager/Buttons/Done2/DoneBG/DoneText/Collider").GetComponent<PlayMakerFSM>();
-            nodButtons.Add(Done2Button);
-
-            LoggerInstance.Msg($"-Yes Button");
-            YesButton = GameObject.Find("GeneralCanvas/EventManager/Buttons/Yes/DoneBG/DoneText/Collider").GetComponent<PlayMakerFSM>();
-            nodButtons.Add(YesButton);
-
-            LoggerInstance.Msg($"-Ready Button");
-            ReadyButton = GameObject.Find("GeneralCanvas/EventManager/Buttons/Ready/DoneBG/DoneText/Collider").GetComponent<PlayMakerFSM>();
-            nodButtons.Add(ReadyButton);
-
-            LoggerInstance.Msg($"-Thank You Button");
-            ThankYouButton = GameObject.Find("GeneralCanvas/EventManager/Buttons/Thank You/DoneBG/DoneText/Collider").GetComponent<PlayMakerFSM>();
-            nodButtons.Add(ThankYouButton);
-
-            LoggerInstance.Msg($"-Thank You 2 Button");
-            ThankYou2Button = GameObject.Find("GeneralCanvas/EventManager/Buttons/Thank You2/DoneBG/DoneText/Collider").GetComponent<PlayMakerFSM>();
-            nodButtons.Add(ThankYou2Button);
-
-            LoggerInstance.Msg($"-Confirm Button");
-            ConfirmButton = GameObject.Find("GeneralCanvas/EventManager/Buttons/Confirm/DoneBG/DoneText/Collider").GetComponent<PlayMakerFSM>();
-            nodButtons.Add(ConfirmButton);
-
-            LoggerInstance.Msg($"-Good Button");
-            GoodButton = GameObject.Find("GeneralCanvas/EventManager/Buttons/Good/DoneBG/DoneText/Collider").GetComponent<PlayMakerFSM>();
-            nodButtons.Add(GoodButton);
-
-            LoggerInstance.Msg($"-Accept Button");
-            AcceptButton = GameObject.Find("GeneralCanvas/EventManager/Buttons/Accept/DoneBG/DoneText/Collider").GetComponent<PlayMakerFSM>();
-            nodButtons.Add(AcceptButton);
-
-
-
-
-
-            LoggerInstance.Msg($"-No Button");
-            NoButton = GameObject.Find("GeneralCanvas/EventManager/Buttons/No/DoneBG/DoneText/Collider").GetComponent<PlayMakerFSM>();
-            headshakeButtons.Add(NoButton);
-
-            LoggerInstance.Msg($"-Failed Button");
-            FailedButton = GameObject.Find("GeneralCanvas/EventManager/Buttons/Failed/DoneBG/DoneText/Collider").GetComponent<PlayMakerFSM>();
-            headshakeButtons.Add(FailedButton);
-
-            LoggerInstance.Msg($"-Failed2 Button");
-            Failed2Button = GameObject.Find("GeneralCanvas/EventManager/Buttons/Failed2/DoneBG/DoneText/Collider").GetComponent<PlayMakerFSM>();
-            headshakeButtons.Add(Failed2Button);
-
-            LoggerInstance.Msg($"-Failed3 Button");
-            Failed3Button = GameObject.Find("GeneralCanvas/EventManager/Buttons/Failed3/DoneBG/DoneText/Collider").GetComponent<PlayMakerFSM>();
-            headshakeButtons.Add(Failed3Button);
-
-            LoggerInstance.Msg($"-Failed4 Button");
-            Failed4Button = GameObject.Find("GeneralCanvas/EventManager/Buttons/Failed4/DoneBG/DoneText/Collider").GetComponent<PlayMakerFSM>();
-            headshakeButtons.Add(Failed4Button);
-
-            LoggerInstance.Msg($"-Disobey Button");
-            DisobeyButton = GameObject.Find("GeneralCanvas/EventManager/Buttons/Disobey/DoneBG/DoneText/Collider").GetComponent<PlayMakerFSM>();
-            headshakeButtons.Add(DisobeyButton);
-
-            LoggerInstance.Msg($"-Disobey2 Button");
-            Disobey2Button = GameObject.Find("GeneralCanvas/EventManager/Buttons/Disobey2/DoneBG/DoneText/Collider").GetComponent<PlayMakerFSM>();
-            headshakeButtons.Add(Disobey2Button);
-
-            LoggerInstance.Msg($"-Disobey3 Button");
-            Disobey3Button = GameObject.Find("GeneralCanvas/EventManager/Buttons/Disobey3/DoneBG/DoneText/Collider").GetComponent<PlayMakerFSM>();
-            headshakeButtons.Add(Disobey3Button);
-
-            LoggerInstance.Msg($"-Disobeyed Button");
-            DisobeyedButton = GameObject.Find("GeneralCanvas/EventManager/Buttons/Disobeyed/DoneBG/DoneText/Collider").GetComponent<PlayMakerFSM>();
-            headshakeButtons.Add(DisobeyedButton);
-
-            LoggerInstance.Msg($"-Disobeyed2 Button");
-            Disobeyed2Button = GameObject.Find("GeneralCanvas/EventManager/Buttons/Disobeyed2/DoneBG/DoneText/Collider").GetComponent<PlayMakerFSM>();
-            headshakeButtons.Add(Disobeyed2Button);
-
-            LoggerInstance.Msg($"-Bad Button");
-            BadButton = GameObject.Find("GeneralCanvas/EventManager/Buttons/Bad/DoneBG/DoneText/Collider").GetComponent<PlayMakerFSM>();
-            headshakeButtons.Add(BadButton);
-
-            LoggerInstance.Msg($"-Decline Button");
-            DeclineButton = GameObject.Find("GeneralCanvas/EventManager/Buttons/Decline/DoneBG/DoneText/Collider").GetComponent<PlayMakerFSM>();
-            headshakeButtons.Add(DeclineButton);
-
-            LoggerInstance.Msg($"-Refuse Button");
-            RefuseButton = GameObject.Find("GeneralCanvas/EventManager/Buttons/Refuse/DoneBG/DoneText/Collider").GetComponent<PlayMakerFSM>();
-            headshakeButtons.Add(RefuseButton);
-        }
-
-        private void nodResult()
-        {
-            foreach (PlayMakerFSM button in nodButtons)
-            {
-                if(button.gameObject.transform.parent.parent.parent.gameObject.activeSelf)
-                {
-                    button.SendEvent("Click");
-                    return;
-                }
-            }
-        }
-        private void headshakeResult()
-        {
-            foreach (PlayMakerFSM button in headshakeButtons)
-            {
-                if (button.gameObject.transform.parent.parent.parent.gameObject.activeSelf)
-                {
-                    button.SendEvent("Click");
-                    return;
-                }
-            }
-        }
-
-        public override void OnLateInitializeMelon()
-        {
-            //XRSettings.LoadDeviceByName("OpenVR");
-            //XRGeneralSettings.Instance.Manager.InitializeLoader();
-            //XRGeneralSettings.Instance.Manager.StartSubsystems();
-        }
+        private readonly List<PlayMakerFSM> nodButtons = new List<PlayMakerFSM>();
+        private readonly List<PlayMakerFSM> headshakeButtons = new List<PlayMakerFSM>();
 
         public override void OnSceneWasInitialized(int buildIndex, string sceneName)
         {
             LoggerInstance.Msg($"Scene {sceneName} with build index {buildIndex} has been loaded!");
             if (buildIndex == 2) {
-                //SubsystemManager.GetInstances(subsystems);
-                //foreach(XRInputSubsystem x in subsystems)
-                //{
-                    //LoggerInstance.Msg($"XRInputSubsystem: {x.GetType()}");
-                    //x.TrySetTrackingOriginMode(TrackingOriginModeFlags.Device);
-                    //x.TryRecenter();
-                //}
-
-                //XRInputSubsystem xrInputSubsystem = xrLoader.GetLoadedSubsystem<XRInputSubsystem>();
-                // xrInputSubsystem.TrySetTrackingOriginMode(TrackingOriginModeFlags.Device);
-
                 vrGestureRecognizer = new VRGestureRecognizer();
                 vrGestureRecognizer.Nodded += OnNod;
                 vrGestureRecognizer.HeadShaken += OnHeadshake;
                 LoggerInstance.Msg($"Setup gestures");
 
-                primary = GameObject.Find("PrimaryCamera");
-                primaryCamera = primary.GetComponent<Camera>();
+                primaryCameraGameObject = GameObject.Find("PrimaryCamera");
+                primaryCamera = primaryCameraGameObject.GetComponent<Camera>();
 
-                world = GameObject.Find("PrimaryCamera/WorldCamDefault");
-                worldCam = world.GetComponent<Camera>();
-                worldCam.cullingMask = -1;
-                worldCam.stereoTargetEye = StereoTargetEyeMask.Both;
+                worldCameraGameObject = GameObject.Find("PrimaryCamera/WorldCamDefault");
+                worldCamera = worldCameraGameObject.GetComponent<Camera>();
+                worldCamera.cullingMask = -1;
+                worldCamera.stereoTargetEye = StereoTargetEyeMask.Both;
                 LoggerInstance.Msg($"Set world camera to VR");
                 var newParent = new GameObject("CameraParent").transform;
-                newParent.position = world.transform.position;
-                var cameraParent = world.transform.parent;
-                world.transform.SetParent(newParent);
+                newParent.position = worldCameraGameObject.transform.position;
+                var cameraParent = worldCameraGameObject.transform.parent;
+                worldCameraGameObject.transform.SetParent(newParent);
                 newParent.SetParent(cameraParent);
                 newParent.rotation = new Quaternion(0, 0, 0, 0);
 
-                canvas = GameObject.Find("GeneralCanvas");
-                canvas2 = canvas.GetComponent<Canvas>();
-                canvas2.worldCamera = worldCam;
-                //canvas3 = canvas.GetComponent<GraphicRaycaster>();
-                //Type camType = typeof(GraphicRaycaster);
-                //PropertyInfo canvasCam = camType.GetProperty("eventCamera");
-                //canvasCam.SetValue(canvas3, worldCam);
+                UICanvasGameObject = GameObject.Find("GeneralCanvas");
+                UICanvas = UICanvasGameObject.GetComponent<Canvas>();
+                UICanvas.worldCamera = worldCamera;
+                UICanvas.renderMode = RenderMode.ScreenSpaceCamera;
+                UICanvas.scaleFactor = 1;
+                UICanvas.planeDistance = currentUIdepth;
                 LoggerInstance.Msg($"Set UI to VR");
-
-                canvas2.renderMode = RenderMode.ScreenSpaceCamera;
-                canvas2.scaleFactor = 1;
-                canvas2.planeDistance = 0.2f;
-                canvasrect = canvas.GetComponent<RectTransform>();
-                //canvasrect.anchoredPosition3D = new Vector3(4.7f, 7.5f, 29f);
-                //canvasrect.localEulerAngles = new Vector3(0f, 210f, 0f);
-                LoggerInstance.Msg($"Moved UI");
 
                 MoveUIElements(0);
                 LoggerInstance.Msg($"Moved UI Elements");
 
-                fadecanvas = UnityEngine.GameObject.Find("FadeCanvas");
-                fadecanvas2 = fadecanvas.GetComponent<Canvas>();
-                fadecanvas2.renderMode = RenderMode.ScreenSpaceCamera;
-                fadecanvas2.planeDistance = 0.1f;
-                fadecanvas2.worldCamera = worldCam;
-                //Type fadecamType = typeof(GraphicRaycaster);
-                //PropertyInfo fadecanvasCam = camType.GetProperty("eventCamera");
-                //fadecanvas3 = fadecanvas.GetComponent<GraphicRaycaster>();
-                //canvasCam.SetValue(fadecanvas3, worldCam);
-                LoggerInstance.Msg($"Moved Fade");
+                fadeCanvasGameObject = UnityEngine.GameObject.Find("FadeCanvas");
+                fadeCanvas = fadeCanvasGameObject.GetComponent<Canvas>();
+                fadeCanvas.renderMode = RenderMode.ScreenSpaceCamera;
+                fadeCanvas.planeDistance = 0.1f;
+                fadeCanvas.worldCamera = worldCamera;
+                LoggerInstance.Msg($"Moved Fade to VR");
 
                 headfollower = GameObject.Find("HeadTargetFollower");
-                headfollower.transform.SetParent(worldCam.transform);
+                headfollower.transform.SetParent(worldCamera.transform);
                 headResetter = headfollower.GetComponent<PlayMakerFSM>();
                 headResetter.enabled = false;
                 headfollower.transform.localPosition = new Vector3(0, 0, 0);
@@ -274,67 +81,19 @@ namespace VSVRMod
                 LoggerInstance.Msg($"Moved head follower");
 
                 findButtons();
-                LoggerInstance.Msg($"Referenced buttons");
+                LoggerInstance.Msg($"Referenced buttons for guestures");
             }
-        }
-
-        private void MoveUIElements(int adjust)
-        {
-            GameObject instructionBorder = GameObject.Find("GeneralCanvas/EventManager/InstructionBorder");
-            RectTransform instructionRect = instructionBorder.GetComponent<RectTransform>();
-            instructionRect.anchoredPosition3D = new Vector3(0, 500 + adjust, 0);
-            instructionRect.anchoredPosition = new Vector2(0, 500 + adjust);
-
-            instructionBorder = GameObject.Find("GeneralCanvas/EventManager/StrokeCount");
-            instructionRect = instructionBorder.GetComponent<RectTransform>();
-            instructionRect.anchoredPosition3D = new Vector3(0, 500 + adjust, 0);
-            instructionRect.anchoredPosition = new Vector2(0, 500 + adjust);
-
-            instructionBorder = GameObject.Find("GeneralCanvas/EventManager/BeatManager2");
-            instructionRect = instructionBorder.GetComponent<RectTransform>();
-            instructionRect.anchoredPosition3D = new Vector3(0, 500 + adjust, 0);
-            instructionRect.anchoredPosition = new Vector2(0, 500 + adjust);
-
-            instructionBorder = GameObject.Find("GeneralCanvas/EventManager/TimedEvent");
-            instructionRect = instructionBorder.GetComponent<RectTransform>();
-            instructionRect.anchoredPosition3D = new Vector3(0, 500 + adjust, 0);
-            instructionRect.anchoredPosition = new Vector2(0, 500 + adjust);
-
-            instructionBorder = GameObject.Find("GeneralCanvas/EventManager/Buttons");
-            instructionRect = instructionBorder.GetComponent<RectTransform>();
-            instructionRect.anchoredPosition3D = new Vector3(-405, 345 + adjust, 0);
-            instructionRect.anchoredPosition = new Vector2(-405, 345 + adjust);
-
-            instructionBorder = GameObject.Find("GeneralCanvas/EventManager/ButtonLabels");
-            instructionRect = instructionBorder.GetComponent<RectTransform>();
-            instructionRect.anchoredPosition3D = new Vector3(-583, 253 + adjust, 0);
-            instructionRect.anchoredPosition = new Vector2(-583, 253 + adjust);
-
-            instructionBorder = GameObject.Find("GeneralCanvas/EventManager/TradeOfferUI");
-            instructionRect = instructionBorder.GetComponent<RectTransform>();
-            instructionRect.anchoredPosition3D = new Vector3(0, 1421, 0);
-            instructionRect.anchoredPosition = new Vector2(0, 1421);
-
-            instructionBorder = GameObject.Find("GeneralCanvas/EventManager/SpinWheelUI");
-            instructionRect = instructionBorder.GetComponent<RectTransform>();
-            instructionRect.anchoredPosition3D = new Vector3(0, 1200, 0);
-            instructionRect.anchoredPosition = new Vector2(0, 1200);
-
-            instructionBorder = GameObject.Find("GeneralCanvas/EventManager/Urges");
-            instructionRect = instructionBorder.GetComponent<RectTransform>();
-            instructionRect.anchoredPosition3D = new Vector3(0, 497 + adjust, 0);
-            instructionRect.anchoredPosition = new Vector2(0, 497 + adjust);
         }
 
         public override void OnLateUpdate()
         {
             if (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift))
             {
-                if(world != null)
+                if(worldCameraGameObject != null)
                 {
-                    world.transform.parent.position = world.transform.position;
-                    world.transform.parent.localPosition = -world.transform.localPosition;
-                    world.transform.parent.rotation = new Quaternion(0, 0, 0, 0);
+                    worldCameraGameObject.transform.parent.position = worldCameraGameObject.transform.position;
+                    worldCameraGameObject.transform.parent.localPosition = -worldCameraGameObject.transform.localPosition;
+                    worldCameraGameObject.transform.parent.rotation = new Quaternion(0, 0, 0, 0);
                 }
             }
         }
@@ -344,6 +103,7 @@ namespace VSVRMod
         public bool UIToggle = false;
 
         public int currentUIAdjust = 0;
+        public float currentUIdepth = 0.4f;
 
         public override void OnUpdate()
         {
@@ -355,12 +115,12 @@ namespace VSVRMod
                     if (UIToggle)
                     {
                         UIToggle = false;
-                        canvas2.worldCamera = primaryCamera;
+                        UICanvas.worldCamera = primaryCamera;
                     }
                     else
                     {
                         UIToggle = true;
-                        canvas2.worldCamera = worldCam;
+                        UICanvas.worldCamera = worldCamera;
                     }
                 }
             }
@@ -382,11 +142,29 @@ namespace VSVRMod
                     MoveUIElements(currentUIAdjust);
                 }
             }
+            else if (Input.GetKeyDown(KeyCode.U) || Input.GetKeyDown(KeyCode.Insert))
+            {
+                if (waitKeyPress)
+                {
+                    waitKeyPress = false;
+                    currentUIdepth += 0.1f;
+                    UICanvas.planeDistance = currentUIdepth;
+                }
+            }
+            else if (Input.GetKeyDown(KeyCode.J) || Input.GetKeyDown(KeyCode.Delete))
+            {
+                if (waitKeyPress)
+                {
+                    waitKeyPress = false;
+                    currentUIdepth -= 0.1f;
+                    UICanvas.planeDistance = currentUIdepth;
+                }
+            }
             else
             {
                 waitKeyPress = true;
             }
-            if(vrGestureRecognizer != null)
+            if (vrGestureRecognizer != null)
             {
                 vrGestureRecognizer.Update();
             }
@@ -410,7 +188,7 @@ namespace VSVRMod
             if (recentNods > 1)
             {
                 LoggerInstance.Msg($"Nod detected");
-                nodResult();
+                NnodResult();
                 recentNods = 0;
             }
         }
@@ -427,10 +205,96 @@ namespace VSVRMod
             LoggerInstance.Msg($"Partial headshake detected, total: " + recentHeadshakes);
             if (recentHeadshakes > 1) { 
                 LoggerInstance.Msg($"Headshake detected");
-                headshakeResult();
+                HeadshakeResult();
                 recentHeadshakes = 0;
             }
         }
-        
+        private void NnodResult()
+        {
+            foreach (PlayMakerFSM button in nodButtons)
+            {
+                if (button.gameObject.transform.parent.parent.parent.gameObject.activeSelf)
+                {
+                    button.SendEvent("Click");
+                    return;
+                }
+            }
+        }
+        private void HeadshakeResult()
+        {
+            foreach (PlayMakerFSM button in headshakeButtons)
+            {
+                if (button.gameObject.transform.parent.parent.parent.gameObject.activeSelf)
+                {
+                    button.SendEvent("Click");
+                    return;
+                }
+            }
+        }
+
+        private void MoveUIElements(int adjust)
+        {
+            GameObject UIElementToMove = GameObject.Find("GeneralCanvas/EventManager/InstructionBorder");
+            RectTransform UIElementToMoveTransform = UIElementToMove.GetComponent<RectTransform>();
+            UIElementToMoveTransform.anchoredPosition3D = new Vector3(0, 500 + adjust, 0);
+            UIElementToMoveTransform.anchoredPosition = new Vector2(0, 500 + adjust);
+
+            UIElementToMove = GameObject.Find("GeneralCanvas/EventManager/StrokeCount");
+            UIElementToMoveTransform = UIElementToMove.GetComponent<RectTransform>();
+            UIElementToMoveTransform.anchoredPosition3D = new Vector3(0, 500 + adjust, 0);
+            UIElementToMoveTransform.anchoredPosition = new Vector2(0, 500 + adjust);
+
+            UIElementToMove = GameObject.Find("GeneralCanvas/EventManager/BeatManager2");
+            UIElementToMoveTransform = UIElementToMove.GetComponent<RectTransform>();
+            UIElementToMoveTransform.anchoredPosition3D = new Vector3(0, 500 + adjust, 0);
+            UIElementToMoveTransform.anchoredPosition = new Vector2(0, 500 + adjust);
+
+            UIElementToMove = GameObject.Find("GeneralCanvas/EventManager/TimedEvent");
+            UIElementToMoveTransform = UIElementToMove.GetComponent<RectTransform>();
+            UIElementToMoveTransform.anchoredPosition3D = new Vector3(0, 500 + adjust, 0);
+            UIElementToMoveTransform.anchoredPosition = new Vector2(0, 500 + adjust);
+
+            UIElementToMove = GameObject.Find("GeneralCanvas/EventManager/Buttons");
+            UIElementToMoveTransform = UIElementToMove.GetComponent<RectTransform>();
+            UIElementToMoveTransform.anchoredPosition3D = new Vector3(-405, 345 + adjust, 0);
+            UIElementToMoveTransform.anchoredPosition = new Vector2(-405, 345 + adjust);
+
+            UIElementToMove = GameObject.Find("GeneralCanvas/EventManager/ButtonLabels");
+            UIElementToMoveTransform = UIElementToMove.GetComponent<RectTransform>();
+            UIElementToMoveTransform.anchoredPosition3D = new Vector3(-583, 253 + adjust, 0);
+            UIElementToMoveTransform.anchoredPosition = new Vector2(-583, 253 + adjust);
+
+            UIElementToMove = GameObject.Find("GeneralCanvas/EventManager/TradeOfferUI");
+            UIElementToMoveTransform = UIElementToMove.GetComponent<RectTransform>();
+            UIElementToMoveTransform.anchoredPosition3D = new Vector3(0, 1421, 0);
+            UIElementToMoveTransform.anchoredPosition = new Vector2(0, 1421);
+
+            UIElementToMove = GameObject.Find("GeneralCanvas/EventManager/SpinWheelUI");
+            UIElementToMoveTransform = UIElementToMove.GetComponent<RectTransform>();
+            UIElementToMoveTransform.anchoredPosition3D = new Vector3(0, 1200, 0);
+            UIElementToMoveTransform.anchoredPosition = new Vector2(0, 1200);
+
+            UIElementToMove = GameObject.Find("GeneralCanvas/EventManager/Urges");
+            UIElementToMoveTransform = UIElementToMove.GetComponent<RectTransform>();
+            UIElementToMoveTransform.anchoredPosition3D = new Vector3(0, 497 + adjust, 0);
+            UIElementToMoveTransform.anchoredPosition = new Vector2(0, 497 + adjust);
+        }
+
+        private void findButtons()
+        {
+            PlayMakerFSM currentButton;
+            foreach (String buttonName in nodButtonNames)
+            {
+                LoggerInstance.Msg($"--Finding nod button: {buttonName}");
+                currentButton = GameObject.Find($"GeneralCanvas/EventManager/Buttons/{buttonName}/DoneBG/DoneText/Collider").GetComponent<PlayMakerFSM>();
+                nodButtons.Add(currentButton);
+            }
+            foreach (String buttonName in headshakButtonNames)
+            {
+                LoggerInstance.Msg($"--Finding headshake button: {buttonName}");
+                currentButton = GameObject.Find($"GeneralCanvas/EventManager/Buttons/{buttonName}/DoneBG/DoneText/Collider").GetComponent<PlayMakerFSM>();
+                headshakeButtons.Add(currentButton);
+            }
+        }
     }
 }
