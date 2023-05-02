@@ -33,6 +33,30 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AllIn1SpriteShaderAssembly">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\AllIn1SpriteShaderAssembly.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp-firstpass">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+    </Reference>
+    <Reference Include="ConditionalExpression">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\ConditionalExpression.dll</HintPath>
+    </Reference>
+    <Reference Include="io.sentry.unity.runtime">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\io.sentry.unity.runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="MelonLoader">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\MelonLoader\MelonLoader.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Security">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\Mono.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="PlayMaker">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\PlayMaker.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Windows.Forms" />
@@ -42,9 +66,255 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="Unity.Build.SlimPlayerRuntime">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\Unity.Build.SlimPlayerRuntime.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Burst">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\Unity.Burst.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Burst.Unsafe">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\Unity.Burst.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Collections">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\Unity.Collections.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Jobs">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\Unity.Jobs.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Mathematics">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\Unity.Mathematics.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.MemoryProfiler">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\Unity.MemoryProfiler.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Platforms.Common">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\Unity.Platforms.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Postprocessing.Runtime">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\Unity.Postprocessing.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Properties">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\Unity.Properties.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Properties.Reflection">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\Unity.Properties.Reflection.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Properties.UI">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\Unity.Properties.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.ScriptableBuildPipeline">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\Unity.ScriptableBuildPipeline.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Serialization">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\Unity.Serialization.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Subsystem.Registration">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\Unity.Subsystem.Registration.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.TextMeshPro">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\Unity.TextMeshPro.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Timeline">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\Unity.Timeline.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.XR.Management">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\Unity.XR.Management.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AccessibilityModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.AccessibilityModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AIModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.AIModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AndroidJNIModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.AndroidJNIModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AnimationModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.AnimationModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ARModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.ARModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AssetBundleModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.AssetBundleModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.AudioModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.AudioModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ClothModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.ClothModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ClusterInputModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.ClusterInputModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ClusterRendererModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.ClusterRendererModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CrashReportingModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.CrashReportingModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.DirectorModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.DirectorModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.DSPGraphModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.DSPGraphModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.GameCenterModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.GameCenterModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.GridModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.GridModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.HotReloadModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.HotReloadModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ImageConversionModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.IMGUIModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.InputLegacyModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.InputModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.InputModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.JSONSerializeModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.JSONSerializeModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.LocalizationModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.LocalizationModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ParticleSystemModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.ParticleSystemModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.PerformanceReportingModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.PerformanceReportingModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.Physics2DModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.Physics2DModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.PhysicsModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ProfilerModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.ProfilerModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ScreenCaptureModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.ScreenCaptureModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.SharedInternalsModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.SharedInternalsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.SpatialTracking">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.SpatialTracking.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.SpriteMaskModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.SpriteMaskModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.SpriteShapeModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.SpriteShapeModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.StreamingModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.StreamingModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.SubstanceModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.SubstanceModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.SubsystemsModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.SubsystemsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TerrainModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.TerrainModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TerrainPhysicsModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.TerrainPhysicsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TextCoreModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.TextCoreModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TilemapModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.TilemapModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TLSModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.TLSModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UIElementsModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.UIElementsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UIModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.UIModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UmbraModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.UmbraModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UNETModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.UNETModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityAnalyticsModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.UnityAnalyticsModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityConnectModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.UnityConnectModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityTestProtocolModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.UnityTestProtocolModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestAssetBundleModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.UnityWebRequestAssetBundleModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestAudioModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.UnityWebRequestAudioModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.UnityWebRequestModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestTextureModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.UnityWebRequestTextureModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UnityWebRequestWWWModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.UnityWebRequestWWWModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.VehiclesModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.VehiclesModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.VFXModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.VFXModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.VideoModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.VideoModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.VRModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.VRModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.WindModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.WindModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.XR.LegacyInputHelpers">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.XR.LegacyInputHelpers.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.XRModule">
+      <HintPath>E:\VS_0.39R3 PCFULL\VS_0.39R3 PCFULL\Virtual Succubus_Data\Managed\UnityEngine.XRModule.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ButtonManager.cs" />
+    <Compile Include="ControllerManager.cs" />
     <Compile Include="MathHelper.cs" />
+    <Compile Include="UIManager.cs" />
     <Compile Include="VRGestureRecognizer.cs" />
     <Compile Include="VSVR.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

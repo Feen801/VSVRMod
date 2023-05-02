@@ -36,4 +36,4 @@ using VSVRMod;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
-[assembly: MelonInfo(typeof(VSVR), "Virtual Succubus VR", "1.0.0", "Feen")]
+[assembly: MelonInfo(typeof(VSVR), "Virtual Succubus VR", "1.0.0", "Feen, Awesomecoder32")]
