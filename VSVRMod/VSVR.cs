@@ -1,7 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using MelonLoader;
+using Michsky.UI.ModernUIPack;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.XR;
 
 namespace VSVRMod
 {
@@ -13,88 +15,167 @@ namespace VSVRMod
         private GameObject worldCameraGameObject;
         private Camera worldCamera;
 
-        private GameObject UICanvasGameObject;
-        private Canvas UICanvas;
+        public GameObject canvasObject;
+        public Canvas canvas;
+        public RectTransform canvasRect;
+        public GraphicRaycaster canvasRaycaster;
 
-        private GameObject fadeCanvasGameObject;
-        private Canvas fadeCanvas;
+        public GameObject fadeCanvasObject;
+        public Canvas fadeCanvas;
+        public GraphicRaycaster fadeCanvasRaycaster;
 
         private GameObject headfollower;
         private PlayMakerFSM headResetter;
 
         private VRGestureRecognizer vrGestureRecognizer;
 
-        private readonly List<String> nodButtonNames = new List<string> { "Ok", "Ok2", "Done1", "Done2", "Yes", "Ready", "Thank You", "Thank You2", "Confirm", "Good", "Accept" };
-        private readonly List<String> headshakButtonNames = new List<string> { "No", "Failed", "Failed2", "Failed3", "Failed4", "Disobey", "Disobey2", "Disobey3", "Disobeyed", "Disobeyed2", "Bad", "Decline", "Refuse" };
+        ButtonManager buttonManager;
+        UIManager uiManager;
+        ControllerManager controllerManager;
 
-        private readonly List<PlayMakerFSM> nodButtons = new List<PlayMakerFSM>();
-        private readonly List<PlayMakerFSM> headshakeButtons = new List<PlayMakerFSM>();
+        private InputDevice _leftController;
+        private InputDevice _rightController;
+
+        public override void OnLateInitializeMelon()
+        {
+            List<InputDevice> devices = new List<InputDevice>();
+            InputDevices.GetDevicesWithCharacteristics(InputDeviceCharacteristics.Controller, devices);
+
+            if (devices.Count > 0)
+            {
+                foreach(var device in devices)
+                {
+                    LoggerInstance.Msg(device.name);
+                    if (device.name.Contains("Left"))
+                    {
+                        _leftController = device;
+                    }
+                    else if (device.name.Contains("Right"))
+                    {
+                        _rightController = device;
+                    }
+                }
+                //LoggerInstance.Msg(devices[0]);
+                //_targetDevice = devices[0];
+            }
+            //XRSettings.LoadDeviceByName("OpenVR");
+            //XRGeneralSettings.Instance.Manager.InitializeLoader();
+            //XRGeneralSettings.Instance.Manager.StartSubsystems();
+        }
 
         public override void OnSceneWasInitialized(int buildIndex, string sceneName)
         {
-            LoggerInstance.Msg($"Scene {sceneName} with build index {buildIndex} has been loaded!");
-            if (buildIndex == 2) {
-                vrGestureRecognizer = new VRGestureRecognizer();
-                vrGestureRecognizer.Nodded += OnNod;
-                vrGestureRecognizer.HeadShaken += OnHeadshake;
-                LoggerInstance.Msg($"Setup gestures");
+            LoggerInstance.Msg($"Scene {sceneName} with build index {buildIndex} has been initalized!");
+            switch (buildIndex)
+            {
+                case 2:
+                    //SubsystemManager.GetInstances(subsystems);
+                    //foreach(XRInputSubsystem x in subsystems)
+                    //{
+                    //LoggerInstance.Msg($"XRInputSubsystem: {x.GetType()}");
+                    //x.TrySetTrackingOriginMode(TrackingOriginModeFlags.Device);
+                    //x.TryRecenter();
+                    //}
 
-                primaryCameraGameObject = GameObject.Find("PrimaryCamera");
-                primaryCamera = primaryCameraGameObject.GetComponent<Camera>();
+                    //XRInputSubsystem xrInputSubsystem = xrLoader.GetLoadedSubsystem<XRInputSubsystem>();
+                    // xrInputSubsystem.TrySetTrackingOriginMode(TrackingOriginModeFlags.Device);
 
-                worldCameraGameObject = GameObject.Find("PrimaryCamera/WorldCamDefault");
-                worldCamera = worldCameraGameObject.GetComponent<Camera>();
-                worldCamera.cullingMask = -1;
-                worldCamera.stereoTargetEye = StereoTargetEyeMask.Both;
-                LoggerInstance.Msg($"Set world camera to VR");
-                var newParent = new GameObject("CameraParent").transform;
-                newParent.position = worldCameraGameObject.transform.position;
-                var cameraParent = worldCameraGameObject.transform.parent;
-                worldCameraGameObject.transform.SetParent(newParent);
-                newParent.SetParent(cameraParent);
-                newParent.rotation = new Quaternion(0, 0, 0, 0);
+                    // Create new classes since a new session instance is starting
+                    buttonManager = new ButtonManager();
+                    controllerManager = new ControllerManager();
+                    uiManager = new UIManager();
 
-                UICanvasGameObject = GameObject.Find("GeneralCanvas");
-                UICanvas = UICanvasGameObject.GetComponent<Canvas>();
-                UICanvas.worldCamera = worldCamera;
-                UICanvas.renderMode = RenderMode.ScreenSpaceCamera;
-                UICanvas.scaleFactor = 1;
-                UICanvas.planeDistance = currentUIdepth;
-                LoggerInstance.Msg($"Set UI to VR");
+                    vrGestureRecognizer = new VRGestureRecognizer();
+                    vrGestureRecognizer.Nodded += OnNod;
+                    vrGestureRecognizer.HeadShaken += OnHeadshake;
+                    LoggerInstance.Msg($"Setup gestures");
 
-                MoveUIElements(0);
-                LoggerInstance.Msg($"Moved UI Elements");
+                    primary = GameObject.Find("PrimaryCamera");
+                    primaryCamera = primary.GetComponent<Camera>();
 
-                fadeCanvasGameObject = UnityEngine.GameObject.Find("FadeCanvas");
-                fadeCanvas = fadeCanvasGameObject.GetComponent<Canvas>();
-                fadeCanvas.renderMode = RenderMode.ScreenSpaceCamera;
-                fadeCanvas.planeDistance = 0.1f;
-                fadeCanvas.worldCamera = worldCamera;
-                LoggerInstance.Msg($"Moved Fade to VR");
+                    world = GameObject.Find("PrimaryCamera/WorldCamDefault");
+                    worldCam = world.GetComponent<Camera>();
+                    worldCam.cullingMask = -1;
+                    worldCam.stereoTargetEye = StereoTargetEyeMask.Both;
+                    LoggerInstance.Msg($"Set world camera to VR");
+                    var newParent = new GameObject("CameraParent").transform;
+                    newParent.position = world.transform.position;
+                    var cameraParent = world.transform.parent;
+                    world.transform.SetParent(newParent);
+                    newParent.SetParent(cameraParent);
+                    newParent.rotation = new Quaternion(0, 0, 0, 0);
 
-                headfollower = GameObject.Find("HeadTargetFollower");
-                headfollower.transform.SetParent(worldCamera.transform);
-                headResetter = headfollower.GetComponent<PlayMakerFSM>();
-                headResetter.enabled = false;
-                headfollower.transform.localPosition = new Vector3(0, 0, 0);
-                headfollower.transform.localRotation = new Quaternion(0, 0, 0, 0);
-                LoggerInstance.Msg($"Moved head follower");
+                    canvasObject = GameObject.Find("GeneralCanvas");
+                    canvas = canvasObject.GetComponent<Canvas>();
+                    canvas.worldCamera = worldCam;
+                    //canvas3 = canvas.GetComponent<GraphicRaycaster>();
+                    //Type camType = typeof(GraphicRaycaster);
+                    //PropertyInfo canvasCam = camType.GetProperty("eventCamera");
+                    //canvasCam.SetValue(canvas3, worldCam);
+                    LoggerInstance.Msg($"Set UI to VR");
 
-                findButtons();
-                LoggerInstance.Msg($"Referenced buttons for guestures");
+                    canvas.renderMode = RenderMode.ScreenSpaceCamera;
+                    canvas.scaleFactor = 1;
+                    canvas.planeDistance = 0.2f;
+                    canvasRect = canvasObject.GetComponent<RectTransform>();
+                    //canvasrect.anchoredPosition3D = new Vector3(4.7f, 7.5f, 29f);
+                    //canvasrect.localEulerAngles = new Vector3(0f, 210f, 0f);
+                    LoggerInstance.Msg($"Moved UI");
+
+                    uiManager.GetUIElements();
+                    LoggerInstance.Msg($"Moved UI Elements");
+
+                    fadeCanvasObject = UnityEngine.GameObject.Find("FadeCanvas");
+                    fadeCanvas = fadeCanvasObject.GetComponent<Canvas>();
+                    fadeCanvas.renderMode = RenderMode.ScreenSpaceCamera;
+                    fadeCanvas.planeDistance = 0.1f;
+                    fadeCanvas.worldCamera = worldCam;
+                    //Type fadecamType = typeof(GraphicRaycaster);
+                    //PropertyInfo fadecanvasCam = camType.GetProperty("eventCamera");
+                    //fadeCanvasRaycaster = fadecanvas.GetComponent<GraphicRaycaster>();
+                    //canvasCam.SetValue(fadeCanvasRaycaster, worldCam);
+                    LoggerInstance.Msg($"Moved Fade");
+
+                    headfollower = GameObject.Find("HeadTargetFollower");
+                    headfollower.transform.SetParent(worldCam.transform);
+                    headResetter = headfollower.GetComponent<PlayMakerFSM>();
+                    headResetter.enabled = false;
+                    headfollower.transform.localPosition = new Vector3(0, 0, 0);
+                    headfollower.transform.localRotation = new Quaternion(0, 0, 0, 0);
+                    LoggerInstance.Msg($"Moved head follower");
+
+                    buttonManager.PopulateButtons();
+                    LoggerInstance.Msg($"Referenced buttons");
+
+                    break;
+                default:
+                    break;
             }
         }
 
         public override void OnLateUpdate()
         {
+            if (_leftController.TryGetFeatureValue(CommonUsages.grip, out float leftGrip) && controllerManager != null)
+            {
+                if (leftGrip == 1 && controllerManager.prevLeftGripValue != 1)
+                {
+                    ResetCamera();
+                }
+                controllerManager.prevLeftGripValue = leftGrip;
+            }
+
+            if (_rightController.TryGetFeatureValue(CommonUsages.grip, out float rightGrip) && controllerManager != null)
+            {
+                if (rightGrip == 1 && controllerManager.prevRightGripValue != 1)
+                {
+                    ResetCamera();
+                }
+                controllerManager.prevRightGripValue = rightGrip;
+            }
+
             if (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift))
             {
-                if(worldCameraGameObject != null)
-                {
-                    worldCameraGameObject.transform.parent.position = worldCameraGameObject.transform.position;
-                    worldCameraGameObject.transform.parent.localPosition = -worldCameraGameObject.transform.localPosition;
-                    worldCameraGameObject.transform.parent.rotation = new Quaternion(0, 0, 0, 0);
-                }
+                ResetCamera();
             }
         }
 
@@ -103,10 +184,113 @@ namespace VSVRMod
         public bool UIToggle = false;
 
         public int currentUIAdjust = 0;
-        public float currentUIdepth = 0.4f;
 
         public override void OnUpdate()
         {
+            // Used for button actions
+            if (controllerManager != null)
+            {
+                if (_leftController.TryGetFeatureValue(CommonUsages.primary2DAxis, out Vector2 leftAxis))
+                {
+                    if (buttonManager != null)
+                    {
+                        if (leftAxis.x < -0.5)
+                        {
+                            buttonManager.RunButtonNum(1);
+                        }
+                        else if (leftAxis.y > 0.5)
+                        {
+                            buttonManager.RunButtonNum(2);
+                        }
+                        else if (leftAxis.x > 0.5)
+                        {
+                            buttonManager.RunButtonNum(3);
+                        }
+                    }
+                    controllerManager.prevLeftAxisValue = leftAxis;
+                }
+
+                if (_rightController.TryGetFeatureValue(CommonUsages.primary2DAxis, out Vector2 rightAxis))
+                {
+                    if (buttonManager != null)
+                    {
+                        if (rightAxis.x < -0.5)
+                        {
+                            buttonManager.RunButtonNum(1);
+                        }
+                        else if (rightAxis.y > 0.5)
+                        {
+                            buttonManager.RunButtonNum(2);
+                        }
+                        else if (rightAxis.x > 0.5)
+                        {
+                            buttonManager.RunButtonNum(3);
+                        }
+                    }
+                    controllerManager.prevRightAxisValue = rightAxis;
+                }
+
+                if (_leftController.TryGetFeatureValue(CommonUsages.primary2DAxisClick, out bool leftStickPressed))
+                {
+                    if (leftStickPressed && !controllerManager.prevLeftAxisClickValue && buttonManager != null)
+                    {
+                        buttonManager.RunButtonNum(4);
+                    }
+                    controllerManager.prevLeftAxisClickValue = leftStickPressed;
+                }
+
+                if (_rightController.TryGetFeatureValue(CommonUsages.primary2DAxisClick, out bool rightStickPressed))
+                {
+                    if (rightStickPressed && !controllerManager.prevRightAxisClickValue && buttonManager != null)
+                    {
+                        buttonManager.RunButtonNum(4);
+                    }
+                    controllerManager.prevRightAxisClickValue = rightStickPressed;
+                }
+
+                if (_leftController.TryGetFeatureValue(CommonUsages.primaryButton, out bool leftPrimaryPressed))
+                {
+                    if (leftPrimaryPressed)
+                    {
+                        LoggerInstance.Msg(uiManager == null);
+                    }
+
+                    if (leftPrimaryPressed && !controllerManager.prevLeftPrimaryValue && uiManager != null)
+                    {
+                        uiManager.RunSafeword();
+                    }
+                    controllerManager.prevLeftPrimaryValue = leftPrimaryPressed;
+                }
+
+                if (_rightController.TryGetFeatureValue(CommonUsages.primaryButton, out bool rightPrimaryPressed))
+                {
+                    if (rightPrimaryPressed && !controllerManager.prevRightPrimaryValue && uiManager != null)
+                    {
+                        uiManager.RunSafeword();
+                    }
+                    controllerManager.prevRightPrimaryValue = rightPrimaryPressed;
+                }
+
+                // Hide UI
+                if (_leftController.TryGetFeatureValue(CommonUsages.secondaryButton, out bool leftSecondaryPressed))
+                {
+                    if (leftSecondaryPressed && !controllerManager.prevLeftSecondaryValue && uiManager != null)
+                    {
+                        uiManager.HideUIElements();
+                    }
+                    controllerManager.prevLeftSecondaryValue = leftSecondaryPressed;
+                }
+
+                if (_rightController.TryGetFeatureValue(CommonUsages.secondaryButton, out bool rightSecondaryPressed))
+                {
+                    if (rightSecondaryPressed && !controllerManager.prevRightSecondaryValue && uiManager != null)
+                    {
+                        uiManager.HideUIElements();
+                    }
+                    controllerManager.prevRightSecondaryValue = rightSecondaryPressed;
+                }
+            }
+
             if (Input.GetKeyDown(KeyCode.Tab))
             {
                 if (waitKeyPress)
@@ -115,31 +299,38 @@ namespace VSVRMod
                     if (UIToggle)
                     {
                         UIToggle = false;
-                        UICanvas.worldCamera = primaryCamera;
+                        canvas.worldCamera = primaryCamera;
                     }
                     else
                     {
                         UIToggle = true;
-                        UICanvas.worldCamera = worldCamera;
+                        canvas.worldCamera = worldCam;
                     }
                 }
             }
-            else if (Input.GetKeyDown(KeyCode.PageUp) || Input.GetKeyDown(KeyCode.Y))
+            else if (Input.GetKeyDown(KeyCode.A) && uiManager != null)
+            {
+                if (waitKeyPress)
+                {
+                    uiManager.RunSafeword();
+                }
+            }
+            else if ((Input.GetKeyDown(KeyCode.PageUp) || Input.GetKeyDown(KeyCode.Y)) && uiManager != null)
             {
                 if (waitKeyPress)
                 {
                     waitKeyPress = false;
                     currentUIAdjust += 50;
-                    MoveUIElements(currentUIAdjust);
+                    uiManager.MoveUIElements(currentUIAdjust);
                 }  
             }
-            else if (Input.GetKeyDown(KeyCode.PageDown) || Input.GetKeyDown(KeyCode.H))
+            else if ((Input.GetKeyDown(KeyCode.PageDown) || Input.GetKeyDown(KeyCode.H)) && uiManager != null)
             {
                 if (waitKeyPress)
                 {
                     waitKeyPress = false;
                     currentUIAdjust -= 50;
-                    MoveUIElements(currentUIAdjust);
+                    uiManager.MoveUIElements(currentUIAdjust);
                 }
             }
             else if (Input.GetKeyDown(KeyCode.U) || Input.GetKeyDown(KeyCode.Insert))
@@ -164,6 +355,7 @@ namespace VSVRMod
             {
                 waitKeyPress = true;
             }
+
             if (vrGestureRecognizer != null)
             {
                 vrGestureRecognizer.Update();
@@ -184,11 +376,11 @@ namespace VSVRMod
             }
             nodLast = MathHelper.CurrentTimeMillis();
             recentNods++;
-            LoggerInstance.Msg($"Partial nod detected, total: " + recentNods);
+            LoggerInstance.Msg($"Partial nod detected, total: {recentNods}");
             if (recentNods > 1)
             {
-                LoggerInstance.Msg($"Nod detected");
-                NnodResult();
+                LoggerInstance.Msg("Nod detected");
+                buttonManager.RunButtonMovement(VSHeadMovement.Nod);
                 recentNods = 0;
             }
         }
@@ -202,10 +394,10 @@ namespace VSVRMod
             }
             headshakeLast = MathHelper.CurrentTimeMillis();
             recentHeadshakes++;
-            LoggerInstance.Msg($"Partial headshake detected, total: " + recentHeadshakes);
+            LoggerInstance.Msg($"Partial headshake detected, total: {recentHeadshakes}");
             if (recentHeadshakes > 1) { 
-                LoggerInstance.Msg($"Headshake detected");
-                HeadshakeResult();
+                LoggerInstance.Msg("Headshake detected");
+                buttonManager.RunButtonMovement(VSHeadMovement.Headshake);
                 recentHeadshakes = 0;
             }
         }
@@ -280,20 +472,13 @@ namespace VSVRMod
             UIElementToMoveTransform.anchoredPosition = new Vector2(0, 497 + adjust);
         }
 
-        private void findButtons()
+        void ResetCamera()
         {
-            PlayMakerFSM currentButton;
-            foreach (String buttonName in nodButtonNames)
+            if (world != null)
             {
-                LoggerInstance.Msg($"--Finding nod button: {buttonName}");
-                currentButton = GameObject.Find($"GeneralCanvas/EventManager/Buttons/{buttonName}/DoneBG/DoneText/Collider").GetComponent<PlayMakerFSM>();
-                nodButtons.Add(currentButton);
-            }
-            foreach (String buttonName in headshakButtonNames)
-            {
-                LoggerInstance.Msg($"--Finding headshake button: {buttonName}");
-                currentButton = GameObject.Find($"GeneralCanvas/EventManager/Buttons/{buttonName}/DoneBG/DoneText/Collider").GetComponent<PlayMakerFSM>();
-                headshakeButtons.Add(currentButton);
+                world.transform.parent.position = world.transform.position;
+                world.transform.parent.localPosition = -world.transform.localPosition;
+                world.transform.parent.rotation = new Quaternion(0, 0, 0, 0);
             }
         }
     }

@@ -44,7 +44,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ButtonManager.cs" />
+    <Compile Include="ControllerManager.cs" />
     <Compile Include="MathHelper.cs" />
+    <Compile Include="UIManager.cs" />
     <Compile Include="VRGestureRecognizer.cs" />
     <Compile Include="VSVR.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
