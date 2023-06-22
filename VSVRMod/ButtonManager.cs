@@ -2,7 +2,6 @@
 using System.Linq;
 using MelonLoader;
 using UnityEngine;
-using static RootMotion.FinalIK.RagdollUtility;
 
 namespace VSVRMod
 {
@@ -39,92 +38,92 @@ namespace VSVRMod
     public class ButtonManager
     {
         GameObject stakesUIObject;
-        GameObject choiceUIObject;
+        GameObject choiceUIObject;      
+
         // Mappings for all VS buttons
         List<VSButton> Buttons = new List<VSButton>()
         {
-            new VSButton() { name = "Done1", buttonNum = 2, headMovement = VSHeadMovement.Nod },
-            new VSButton() { name = "Done2", buttonNum = 1, headMovement = VSHeadMovement.Nod },
-            new VSButton() { name = "Taunt", buttonNum = 2 },
-            new VSButton() { name = "Taunt2", buttonNum = 3, headMovement = VSHeadMovement.Headshake },
-            new VSButton() { name = "Mercy", buttonNum = 1 },
-            new VSButton() { name = "Mercy2", buttonNum = 3 },
-            new VSButton() { name = "Mercy3", buttonNum = 2 },
-            new VSButton() { name = "MercyNoFavor", buttonNum = 1 },
-            new VSButton() { name = "Decline", buttonNum = 3, headMovement = VSHeadMovement.Headshake },
-            new VSButton() { name = "Yes", buttonNum = 1, headMovement = VSHeadMovement.Nod },
-            new VSButton() { name = "No", buttonNum = 3, headMovement = VSHeadMovement.Headshake },
-            new VSButton() { name = "Failed", buttonNum = 3, headMovement = VSHeadMovement.Headshake },
-            new VSButton() { name = "Failed2", buttonNum = 2, headMovement = VSHeadMovement.Headshake },
-            new VSButton() { name = "Failed3", buttonNum = 2, headMovement = VSHeadMovement.Headshake },
-            new VSButton() { name = "Failed4", buttonNum = 1, headMovement = VSHeadMovement.Headshake },
-            new VSButton() { name = "Sorry", buttonNum = 2 },
-            new VSButton() { name = "Sorry2", buttonNum = 1 },
-            new VSButton() { name = "Ok", buttonNum = 2, headMovement = VSHeadMovement.Nod },
-            new VSButton() { name = "Ok2", buttonNum = 1, headMovement = VSHeadMovement.Nod },
-            new VSButton() { name = "Thank You", buttonNum = 2, headMovement = VSHeadMovement.Nod },
-            new VSButton() { name = "Thank You2", buttonNum = 1, headMovement = VSHeadMovement.Nod },
-            new VSButton() { name = "Thank You3", buttonNum = 3, headMovement = VSHeadMovement.Nod },
-            new VSButton() { name = "Pay", buttonNum = 2 },
-            new VSButton() { name = "Pay2", buttonNum = 3 },
-            new VSButton() { name = "Wait", buttonNum = 3 },
-            new VSButton() { name = "Continue", buttonNum = 2, headMovement = VSHeadMovement.Nod },
-            new VSButton() { name = "Ready", buttonNum = 2, headMovement = VSHeadMovement.Nod },
-            new VSButton() { name = "Ready2", buttonNum = 1, headMovement = VSHeadMovement.Nod },
-            new VSButton() { name = "Beg", buttonNum = 3 },
-            new VSButton() { name = "Beg2", buttonNum = 2 },
-            new VSButton() { name = "Beg2NoFavor", buttonNum = 2 },
-            new VSButton() { name = "Disobey", buttonNum = 2, headMovement = VSHeadMovement.Headshake },
-            new VSButton() { name = "Disobey2", buttonNum = 3, headMovement = VSHeadMovement.Headshake },
-            new VSButton() { name = "Disobey3", buttonNum = 3, headMovement = VSHeadMovement.Headshake },
-            new VSButton() { name = "Disobeyed", buttonNum = 2, headMovement = VSHeadMovement.Headshake },
-            new VSButton() { name = "Disobeyed2", buttonNum = 3, headMovement = VSHeadMovement.Headshake },
-            new VSButton() { name = "Confirm", buttonNum = 2, headMovement = VSHeadMovement.Nod },
-            new VSButton() { name = "Bye", buttonNum = 2 },
-            new VSButton() { name = "Spin", buttonNum = 1, headMovement = VSHeadMovement.Nod },
-            new VSButton() { name = "Pass", buttonNum = 2 },
-            new VSButton() { name = "EdgeCentered", buttonNum = 2, headMovement = VSHeadMovement.Nod },
-            new VSButton() { name = "EdgeLeft", buttonNum = 1, headMovement = VSHeadMovement.Nod },
-            new VSButton() { name = "RhythmEdge", buttonNum = 1, headMovement = VSHeadMovement.Nod },
-            new VSButton() { name = "EdgeEnding", buttonNum = 2, headMovement = VSHeadMovement.Nod },
-            new VSButton() { name = "FinishCentered", buttonNum = 2 },
-            new VSButton() { name = "ConfirmNo", buttonNum = 1 },
-            new VSButton() { name = "Good", buttonNum = 1, headMovement = VSHeadMovement.Nod },
-            new VSButton() { name = "Bad", buttonNum = 3, headMovement = VSHeadMovement.Headshake },
-            new VSButton() { name = "Uh Oh", buttonNum = 2 },
-            new VSButton() { name = "Obey", buttonNum = 2, headMovement = VSHeadMovement.Nod },
+            //Positives/left side
+            new VSButton() { name = "Thank You3", buttonNum = 1, headMovement = VSHeadMovement.Nod },
             new VSButton() { name = "Accept", buttonNum = 1, headMovement = VSHeadMovement.Nod },
-            new VSButton() { name = "Cumming", buttonNum = 2 },
-            new VSButton() { name = "EndSession", buttonNum = 1, headMovement = VSHeadMovement.Headshake },
-            new VSButton() { name = "ContinueSession", buttonNum = 3, headMovement = VSHeadMovement.Nod },
-            new VSButton() { name = "GoEasy", buttonNum = 2 },
+            new VSButton() { name = "Obey", buttonNum = 1, headMovement = VSHeadMovement.Nod },
+            new VSButton() { name = "Ready", buttonNum = 1, headMovement = VSHeadMovement.Nod },
+            new VSButton() { name = "Thank You2", buttonNum = 1, headMovement = VSHeadMovement.Nod },
+            new VSButton() { name = "Ok2", buttonNum = 1, headMovement = VSHeadMovement.Nod },
+            new VSButton() { name = "Ready", buttonNum = 1, headMovement = VSHeadMovement.Nod },
+            new VSButton() { name = "Continue", buttonNum = 1, headMovement = VSHeadMovement.Nod },
+            new VSButton() { name = "Done1", buttonNum = 1, headMovement = VSHeadMovement.Nod },
+            new VSButton() { name = "Done2", buttonNum = 1, headMovement = VSHeadMovement.Nod },
+            new VSButton() { name = "Yes", buttonNum = 1, headMovement = VSHeadMovement.Nod },
+            new VSButton() { name = "Ok", buttonNum = 1, headMovement = VSHeadMovement.Nod },
+            new VSButton() { name = "Thank You", buttonNum = 1, headMovement = VSHeadMovement.Nod },
+            new VSButton() { name = "Confirm", buttonNum = 1, headMovement = VSHeadMovement.Nod },
+            new VSButton() { name = "Sorry", buttonNum = 1, headMovement = VSHeadMovement.Nod },
+            new VSButton() { name = "Pay2", buttonNum = 1, headMovement = VSHeadMovement.Nod },
+            new VSButton() { name = "Pay", buttonNum = 1, headMovement = VSHeadMovement.Nod },
+            new VSButton() { name = "Sorry2", buttonNum = 1, headMovement = VSHeadMovement.Nod },
+            new VSButton() { name = "Bye", buttonNum = 1, headMovement = VSHeadMovement.Nod },
+            new VSButton() { name = "Spin", buttonNum = 1, headMovement = VSHeadMovement.Nod },
+            new VSButton() { name = "Good", buttonNum = 1, headMovement = VSHeadMovement.Nod },
+            new VSButton() { name = "Uh Oh", buttonNum = 1, headMovement = VSHeadMovement.Nod },
+            new VSButton() { name = "Ready2", buttonNum = 1, headMovement = VSHeadMovement.Nod },
+            new VSButton() { name = "Cumming", buttonNum = 1, headMovement = VSHeadMovement.Nod },
+            new VSButton() { name = "RhythmEdge", buttonNum = 1, headMovement = VSHeadMovement.Nod },
+            new VSButton() { name = "EdgeEnding", buttonNum = 1, headMovement = VSHeadMovement.Nod },
+            new VSButton() { name = "EdgeLeft", buttonNum = 1, headMovement = VSHeadMovement.Nod },
+            new VSButton() { name = "EdgeCentered", buttonNum = 1, headMovement = VSHeadMovement.Nod },
+            //new VSButton() { name = "PoTMercy", buttonNum = 1, headMovement = VSHeadMovement.Nod }, ???
+            new VSButton() { name = "MercyNoFavor", buttonNum = 1, headMovement = VSHeadMovement.Nod },
+
+            //Negatives/right side
+            new VSButton() { name = "Disobey", buttonNum = 3, headMovement = VSHeadMovement.Headshake },
+            new VSButton() { name = "Disobey2", buttonNum = 3, headMovement = VSHeadMovement.Headshake },
+            new VSButton() { name = "Disobeyed2", buttonNum = 3, headMovement = VSHeadMovement.Headshake },
+            new VSButton() { name = "Disobeyed", buttonNum = 3, headMovement = VSHeadMovement.Headshake },
+            new VSButton() { name = "Disobey3", buttonNum = 3, headMovement = VSHeadMovement.Headshake },
+            new VSButton() { name = "Decline", buttonNum = 3, headMovement = VSHeadMovement.Headshake },
+            new VSButton() { name = "Bad", buttonNum = 3, headMovement = VSHeadMovement.Headshake },
+            new VSButton() { name = "No", buttonNum = 3, headMovement = VSHeadMovement.Headshake },
+            new VSButton() { name = "Failed2", buttonNum = 3, headMovement = VSHeadMovement.Headshake },
+            new VSButton() { name = "Failed", buttonNum = 3, headMovement = VSHeadMovement.Headshake },
+            new VSButton() { name = "Failed3", buttonNum = 3, headMovement = VSHeadMovement.Headshake },
             new VSButton() { name = "Refuse", buttonNum = 3, headMovement = VSHeadMovement.Headshake },
-            new VSButton() { name = "FavoriteHeart", buttonNum = 2 },
-            new VSButton() { name = "OpportunityProvoke", buttonNum = 2 },
-            new VSButton() { name = "OpportunityTaunt", buttonNum = 2 },
-            new VSButton() { name = "OpportunityEntice", buttonNum = 2 },
-            new VSButton() { name = "OpportunityPraise", buttonNum = 2 },
-
-            // Stakes buttons
-            new VSButton() { name = "BG1", buttonNum = 1 },
-            new VSButton() { name = "BG2", buttonNum = 2 },
-            new VSButton() { name = "BG3", buttonNum = 3},
-
-            // Choice buttons
-            new VSButton() { name = "Choice1", buttonNum = 1 },
-            new VSButton() { name = "Choice2", buttonNum = 3 },
-
-            // new VSButton() { name = "PoTMercy" },
-
-            // 4 - analog stick click
-            new VSButton() { name = "Oops", buttonNum = 4 },
-            new VSButton() { name = "OopsCentered", buttonNum = 4 },
-            new VSButton() { name = "NoEdgeOops", buttonNum = 4 },
-            new VSButton() { name = "NoEdgeOopsCentered", buttonNum = 4 },
-            new VSButton() { name = "ForcedOops", buttonNum = 4 },
-            new VSButton() { name = "OopsNo", buttonNum = 4 },
+            new VSButton() { name = "Failed4", buttonNum = 3, headMovement = VSHeadMovement.Headshake },
+            new VSButton() { name = "Decline", buttonNum = 3, headMovement = VSHeadMovement.Headshake },
+            new VSButton() { name = "ConfirmNo", buttonNum = 3, headMovement = VSHeadMovement.Headshake },
+            new VSButton() { name = "Beg", buttonNum = 3, headMovement = VSHeadMovement.Headshake },
+            new VSButton() { name = "Beg2", buttonNum = 3, headMovement = VSHeadMovement.Headshake },
+            new VSButton() { name = "Beg2NoFavor", buttonNum = 3, headMovement = VSHeadMovement.Headshake },
         };
-        
+
+        GameObject radialMenuButton1;
+        GameObject radialMenuButton2;
+
+        GameObject level1Ring;
+        GameObject level2Ring;
+
+        GameObject edgeRadialButton;
+        GameObject tauntRadialButton;
+        GameObject mercyRadialButton;
+
+        GameObject edgeRadialButtonReact;
+        GameObject tauntRadialButtonReact;
+        GameObject mercyRadialButtonReact;
+
+        GameObject timeOutRadialButton;
+        GameObject hideUIRadialButton;
+        GameObject safeWordRadialButton;
+        GameObject OopsWordRadialButton;
+
+        GameObject timeOutRadialButtonReact;
+        GameObject hideUIRadialButtonReact;
+        GameObject safeWordRadialButtonReact;
+        GameObject oopsWordRadialButtonReact;
+
+        GameObject exitButtonRadial;
+
+        GameObject arousalPlusButton;
+        GameObject arousalMinusButton;
         public void PopulateButtons()
         {
             GameObject buttonParent = GameObject.Find("GeneralCanvas/EventManager/Buttons");
@@ -145,6 +144,173 @@ namespace VSVRMod
             foreach (Transform child in choiceObject.transform)
             {
                 UpdateVSButton(child, "Collider", VSButton.VSButtonType.Choice);
+            }
+
+            radialMenuButton1 = GameObject.Find("GeneralCanvas/EventManager/NewButtons/Center/Circle");
+            radialMenuButton2 = GameObject.Find("GeneralCanvas/EventManager/NewButtons/Center/Level1/OtherButtons/Grow");
+
+            level1Ring = GameObject.Find("GeneralCanvas/EventManager/NewButtons/Center/Level1");
+            level2Ring = GameObject.Find("GeneralCanvas/EventManager/NewButtons/Center/Level2");
+
+            edgeRadialButton = GameObject.Find("GeneralCanvas/EventManager/NewButtons/Center/Level1/OtherButtons/EdgeBG");
+            tauntRadialButton = GameObject.Find("GeneralCanvas/EventManager/NewButtons/Center/Level1/OtherButtons/TauntBG");
+            mercyRadialButton = GameObject.Find("GeneralCanvas/EventManager/NewButtons/Center/Level1/OtherButtons/MercyBG");
+
+            edgeRadialButtonReact = GameObject.Find("GeneralCanvas/EventManager/NewButtons/Center/Level1/OtherButtons/EdgeBG/Collider/ButtonReact");
+            tauntRadialButtonReact = GameObject.Find("GeneralCanvas/EventManager/NewButtons/Center/Level1/OtherButtons/TauntBG/Collider/ButtonReact");
+            mercyRadialButtonReact = GameObject.Find("GeneralCanvas/EventManager/NewButtons/Center/Level1/OtherButtons/MercyBG/Collider/ButtonReact");
+
+            timeOutRadialButton = GameObject.Find("GeneralCanvas/EventManager/NewButtons/Center/Level2/GameObject/Time Out");
+            hideUIRadialButton = GameObject.Find("GeneralCanvas/EventManager/NewButtons/Center/Level2/GameObject/Hide UI"); ;
+            safeWordRadialButton = GameObject.Find("GeneralCanvas/EventManager/NewButtons/Center/Level2/GameObject (1)/Safe Word"); ;
+            OopsWordRadialButton = GameObject.Find("GeneralCanvas/EventManager/NewButtons/Center/Level2/GameObject (1)/Oops");
+
+            timeOutRadialButtonReact = GameObject.Find("GeneralCanvas/EventManager/NewButtons/Center/Level2/GameObject/Time Out/Collider (1)/ButtonReact");
+            hideUIRadialButtonReact = GameObject.Find("GeneralCanvas/EventManager/NewButtons/Center/Level2/GameObject/Hide UI/Collider/ButtonReact");
+            safeWordRadialButtonReact = GameObject.Find("GeneralCanvas/EventManager/NewButtons/Center/Level2/GameObject (1)/Safe Word/Collider/ButtonReact");
+            oopsWordRadialButtonReact = GameObject.Find("GeneralCanvas/EventManager/NewButtons/Center/Level2/GameObject (1)/Oops/Collider/ButtonReact");
+
+            exitButtonRadial = GameObject.Find("GeneralCanvas/EventManager/NewButtons/Center/Level1/Exit");
+
+            arousalPlusButton = GameObject.Find("GeneralCanvas/EventManager/NewButtons/Center/Level1/ArousalMeter/Overlays/Plus");
+            arousalMinusButton = GameObject.Find("GeneralCanvas/EventManager/NewButtons/Center/Level1/ArousalMeter/Overlays/Minus");
+        }
+
+        public void radialMenuInteract(bool isClick, double angle)
+        {
+            int level = 0;
+            if(level1Ring.activeSelf)
+            {
+                level = 1;
+            }
+            if (level2Ring.activeSelf)
+            {
+                level = 2;
+            }
+            if (level == 1)
+            {
+                timeOutRadialButtonReact.SetActive(false);
+                hideUIRadialButtonReact.SetActive(false);
+                safeWordRadialButtonReact.SetActive(false);
+                oopsWordRadialButtonReact.SetActive(false);
+                if (angle > -20 && angle < 20)
+                {
+                    edgeRadialButtonReact.SetActive(true);
+                    tauntRadialButtonReact.SetActive(false);
+                    mercyRadialButtonReact.SetActive(false);
+                    if(isClick)
+                    {
+                        edgeRadialButton.transform.Find("Collider").GetComponent<PlayMakerFSM>().SendEvent("Click");
+                    }
+                }
+                else if (angle > 20 && angle < 60)
+                {
+                    edgeRadialButtonReact.SetActive(false);
+                    tauntRadialButtonReact.SetActive(true);
+                    mercyRadialButtonReact.SetActive(false);
+                    if (isClick)
+                    {
+                        tauntRadialButton.transform.Find("Collider").GetComponent<PlayMakerFSM>().SendEvent("Click");
+                    }
+                }
+                else if (angle < -20 && angle > -60)
+                {
+                    edgeRadialButtonReact.SetActive(false);
+                    tauntRadialButtonReact.SetActive(false);
+                    mercyRadialButtonReact.SetActive(true);
+                    if (isClick)
+                    {
+                        mercyRadialButton.transform.Find("Collider").GetComponent<PlayMakerFSM>().SendEvent("Click");
+                    }
+                }
+                else
+                {
+                    edgeRadialButtonReact.SetActive(false);
+                    tauntRadialButtonReact.SetActive(false);
+                    mercyRadialButtonReact.SetActive(false);
+                }
+            }
+            else if (level == 2)
+            {
+                edgeRadialButtonReact.SetActive(false);
+                tauntRadialButtonReact.SetActive(false);
+                mercyRadialButtonReact.SetActive(false);
+                if (angle > -30 && angle < 0)
+                {
+                    timeOutRadialButtonReact.SetActive(true);
+                    hideUIRadialButtonReact.SetActive(false);
+                    safeWordRadialButtonReact.SetActive(false);
+                    oopsWordRadialButtonReact.SetActive(false);
+                    if (isClick)
+                    {
+                        timeOutRadialButton.transform.Find("Collider").GetComponent<PlayMakerFSM>().SendEvent("Click");
+                    }
+                }
+                else if (angle > 0 && angle < 30)
+                {
+                    timeOutRadialButtonReact.SetActive(false);
+                    hideUIRadialButtonReact.SetActive(false);
+                    safeWordRadialButtonReact.SetActive(true);
+                    oopsWordRadialButtonReact.SetActive(false);
+                    if (isClick)
+                    {
+                        safeWordRadialButton.transform.Find("Collider").GetComponent<PlayMakerFSM>().SendEvent("Click");
+                    }
+                }
+                else if (angle > 30 && angle < 60)
+                {
+                    timeOutRadialButtonReact.SetActive(false);
+                    hideUIRadialButtonReact.SetActive(false);
+                    safeWordRadialButtonReact.SetActive(false);
+                    oopsWordRadialButtonReact.SetActive(true);
+                    if (isClick)
+                    {
+                        OopsWordRadialButton.transform.Find("Collider").GetComponent<PlayMakerFSM>().SendEvent("Click");
+                    }
+                }
+                else if (angle < -30 && angle > -60)
+                {
+                    timeOutRadialButtonReact.SetActive(false);
+                    hideUIRadialButtonReact.SetActive(true);
+                    safeWordRadialButtonReact.SetActive(false);
+                    oopsWordRadialButtonReact.SetActive(false);
+                    if (isClick)
+                    {
+                        hideUIRadialButton.transform.Find("Collider").GetComponent<PlayMakerFSM>().SendEvent("Click");
+                    }
+                }
+                else
+                {
+                    timeOutRadialButtonReact.SetActive(false);
+                    hideUIRadialButtonReact.SetActive(false);
+                    safeWordRadialButtonReact.SetActive(false);
+                    oopsWordRadialButtonReact.SetActive(false);
+                }
+            }
+
+            if(angle < -60 && isClick)
+            {
+                arousalMinusButton.transform.Find("Collider").GetComponent<PlayMakerFSM>().SendEvent("Click");
+            }
+            if (angle > 60 && isClick)
+            {
+                arousalPlusButton.transform.Find("Collider").GetComponent<PlayMakerFSM>().SendEvent("Click");
+            }
+        }
+
+        public void radialMenuExpand()
+        {
+            if(!level2Ring.activeSelf && level1Ring.activeSelf)
+            {
+                radialMenuButton2.transform.Find("Collider").GetComponent<PlayMakerFSM>().SendEvent("Click");
+            }
+            else if (!level1Ring.activeSelf)
+            {
+                radialMenuButton1.transform.Find("Collider").GetComponent<PlayMakerFSM>().SendEvent("Click");
+            }
+            else
+            {
+                exitButtonRadial.GetComponent<PlayMakerFSM>().SendEvent("Click");
             }
         }
 

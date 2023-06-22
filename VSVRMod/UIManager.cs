@@ -28,7 +28,8 @@ namespace VSVRMod
             new VSUIElement() { objectName = "ButtonLabels" },
             new VSUIElement() { objectName = "TradeOfferUI" },
             new VSUIElement() { objectName = "SpinWheelUI" },
-            new VSUIElement() { objectName = "Urges" }
+            new VSUIElement() { objectName = "Urges" },
+            new VSUIElement() { objectName = "NewButtons" }
         };
 
         public void GetUIElements()
@@ -79,10 +80,10 @@ namespace VSVRMod
             switch (element.objectName)
             {
                 case "Buttons":
-                    SetUIPosition(element, new Vector2(-405, 345 + adjust), new Vector3(-405, 345 + adjust, 0));
+                    SetUIPosition(element, new Vector2(0, 345 + adjust), new Vector3(0, 345 + adjust, 0));
                     break;
                 case "ButtonLabels":
-                    SetUIPosition(element, new Vector2(-583, 253 + adjust), new Vector3(-583, 253 + adjust, 0));
+                    SetUIPosition(element, new Vector2(0, 253 + adjust), new Vector3(0, 253 + adjust, 0));
                     break;
                 case "TradeOfferUI":
                     SetUIPosition(element, new Vector2(0, 1421), new Vector3(0, 1421, 0));
@@ -92,6 +93,9 @@ namespace VSVRMod
                     break;
                 case "Urges":
                     SetUIPosition(element, new Vector2(0, 497 + adjust), new Vector3(0, 497 + adjust, 0));
+                    break;
+                case "NewButtons":
+                    SetUIPosition(element, new Vector2(0, 345 + adjust), new Vector3(0, 345 + adjust, 0));
                     break;
                 default:
                     SetUIPosition(element, new Vector2(0, 500 + adjust), new Vector3(0, 500 + adjust, 0));

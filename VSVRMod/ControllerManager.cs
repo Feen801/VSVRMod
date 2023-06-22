@@ -16,6 +16,9 @@ namespace VSVRMod
         public bool prevLeftSecondaryValue = false;
         public bool prevRightSecondaryValue = false;
 
+        public bool prevLeftTriggerValue = false;
+        public bool prevRightTriggerValue = false;
+
         public float prevLeftGripValue = 0f;
         public float prevRightGripValue = 0f;
     }

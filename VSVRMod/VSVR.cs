@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using MelonLoader;
-using Michsky.UI.ModernUIPack;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.XR;
@@ -23,6 +23,10 @@ namespace VSVRMod
         public GameObject fadeCanvasObject;
         public Canvas fadeCanvas;
         public GraphicRaycaster fadeCanvasRaycaster;
+
+        public GameObject overlayCanvasObject;
+        public Canvas overlayCanvas;
+        public GraphicRaycaster overlayCanvasRaycaster;
 
         private GameObject headfollower;
         private PlayMakerFSM headResetter;
@@ -90,24 +94,24 @@ namespace VSVRMod
                     vrGestureRecognizer.HeadShaken += OnHeadshake;
                     LoggerInstance.Msg($"Setup gestures");
 
-                    primary = GameObject.Find("PrimaryCamera");
-                    primaryCamera = primary.GetComponent<Camera>();
+                    primaryCameraGameObject = GameObject.Find("PrimaryCamera");
+                    primaryCamera = primaryCameraGameObject.GetComponent<Camera>();
 
-                    world = GameObject.Find("PrimaryCamera/WorldCamDefault");
-                    worldCam = world.GetComponent<Camera>();
-                    worldCam.cullingMask = -1;
-                    worldCam.stereoTargetEye = StereoTargetEyeMask.Both;
+                    worldCameraGameObject = GameObject.Find("PrimaryCamera/WorldCamDefault");
+                    worldCamera = worldCameraGameObject.GetComponent<Camera>();
+                    worldCamera.cullingMask = -1;
+                    worldCamera.stereoTargetEye = StereoTargetEyeMask.Both;
                     LoggerInstance.Msg($"Set world camera to VR");
                     var newParent = new GameObject("CameraParent").transform;
-                    newParent.position = world.transform.position;
-                    var cameraParent = world.transform.parent;
-                    world.transform.SetParent(newParent);
+                    newParent.position = worldCameraGameObject.transform.position;
+                    var cameraParent = worldCameraGameObject.transform.parent;
+                    worldCameraGameObject.transform.SetParent(newParent);
                     newParent.SetParent(cameraParent);
                     newParent.rotation = new Quaternion(0, 0, 0, 0);
 
                     canvasObject = GameObject.Find("GeneralCanvas");
                     canvas = canvasObject.GetComponent<Canvas>();
-                    canvas.worldCamera = worldCam;
+                    canvas.worldCamera = worldCamera;
                     //canvas3 = canvas.GetComponent<GraphicRaycaster>();
                     //Type camType = typeof(GraphicRaycaster);
                     //PropertyInfo canvasCam = camType.GetProperty("eventCamera");
@@ -116,7 +120,7 @@ namespace VSVRMod
 
                     canvas.renderMode = RenderMode.ScreenSpaceCamera;
                     canvas.scaleFactor = 1;
-                    canvas.planeDistance = 0.2f;
+                    canvas.planeDistance = currentUIdepth;
                     canvasRect = canvasObject.GetComponent<RectTransform>();
                     //canvasrect.anchoredPosition3D = new Vector3(4.7f, 7.5f, 29f);
                     //canvasrect.localEulerAngles = new Vector3(0f, 210f, 0f);
@@ -129,15 +133,26 @@ namespace VSVRMod
                     fadeCanvas = fadeCanvasObject.GetComponent<Canvas>();
                     fadeCanvas.renderMode = RenderMode.ScreenSpaceCamera;
                     fadeCanvas.planeDistance = 0.1f;
-                    fadeCanvas.worldCamera = worldCam;
+                    fadeCanvas.worldCamera = worldCamera;
                     //Type fadecamType = typeof(GraphicRaycaster);
                     //PropertyInfo fadecanvasCam = camType.GetProperty("eventCamera");
                     //fadeCanvasRaycaster = fadecanvas.GetComponent<GraphicRaycaster>();
                     //canvasCam.SetValue(fadeCanvasRaycaster, worldCam);
                     LoggerInstance.Msg($"Moved Fade");
 
+                    overlayCanvasObject = UnityEngine.GameObject.Find("OverlayCanvas");
+                    overlayCanvas = overlayCanvasObject.GetComponent<Canvas>();
+                    overlayCanvas.renderMode = RenderMode.ScreenSpaceCamera;
+                    overlayCanvas.planeDistance = currentUIdepth;
+                    overlayCanvas.worldCamera = worldCamera;
+                    //Type fadecamType = typeof(GraphicRaycaster);
+                    //PropertyInfo fadecanvasCam = camType.GetProperty("eventCamera");
+                    //fadeCanvasRaycaster = fadecanvas.GetComponent<GraphicRaycaster>();
+                    //canvasCam.SetValue(fadeCanvasRaycaster, worldCam);
+                    LoggerInstance.Msg($"Moved Overlay");
+
                     headfollower = GameObject.Find("HeadTargetFollower");
-                    headfollower.transform.SetParent(worldCam.transform);
+                    headfollower.transform.SetParent(worldCamera.transform);
                     headResetter = headfollower.GetComponent<PlayMakerFSM>();
                     headResetter.enabled = false;
                     headfollower.transform.localPosition = new Vector3(0, 0, 0);
@@ -146,6 +161,12 @@ namespace VSVRMod
 
                     buttonManager.PopulateButtons();
                     LoggerInstance.Msg($"Referenced buttons");
+
+                    //WIP
+                    Slider depthSlider = canvasObject.AddComponent<Slider>();
+                    depthSlider.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 500);
+                    depthSlider.maxValue = 100;
+                    depthSlider.minValue = 0;
 
                     break;
                 default:
@@ -181,60 +202,58 @@ namespace VSVRMod
 
         public bool waitKeyPress = true;
 
-        public bool UIToggle = false;
+        public bool UIToggle = true;
 
         public int currentUIAdjust = 0;
+
+        public float currentUIdepth = 0.2f;
 
         public override void OnUpdate()
         {
             // Used for button actions
             if (controllerManager != null)
             {
-                if (_leftController.TryGetFeatureValue(CommonUsages.primary2DAxis, out Vector2 leftAxis))
+                Vector2 leftAxis;
+                Vector2 rightAxis;
+                Vector2 axis;
+                
+
+                if (buttonManager != null)
                 {
-                    if (buttonManager != null)
+                    _leftController.TryGetFeatureValue(CommonUsages.primary2DAxis, out leftAxis);
+                    _rightController.TryGetFeatureValue(CommonUsages.primary2DAxis, out rightAxis);
+                    if (leftAxis.magnitude > rightAxis.magnitude)
                     {
-                        if (leftAxis.x < -0.5)
-                        {
-                            buttonManager.RunButtonNum(1);
-                        }
-                        else if (leftAxis.y > 0.5)
-                        {
-                            buttonManager.RunButtonNum(2);
-                        }
-                        else if (leftAxis.x > 0.5)
-                        {
-                            buttonManager.RunButtonNum(3);
-                        }
+                        axis = leftAxis;
+                    }
+                    else
+                    {
+                        axis = rightAxis;
+                    }
+                    double radians = Math.Atan2(axis.x, axis.y);
+                    double magnitude = axis.magnitude;
+                    double angle = radians * (180 / Math.PI);
+
+                    //LoggerInstance.Msg($"Controller input: {magnitude}, {angle}");
+
+                    if (_rightController.TryGetFeatureValue(CommonUsages.triggerButton, out bool rightTriggerPressed))
+                    {
+                        buttonManager.radialMenuInteract(!controllerManager.prevRightTriggerValue && magnitude > 0.7 && rightTriggerPressed, angle);
+                        controllerManager.prevRightTriggerValue = rightTriggerPressed;
+                    }
+                    if (_leftController.TryGetFeatureValue(CommonUsages.triggerButton, out bool leftTriggerPressed))
+                    {
+                        buttonManager.radialMenuInteract(!controllerManager.prevLeftTriggerValue && magnitude > 0.7 && leftTriggerPressed, angle);
+                        controllerManager.prevLeftTriggerValue = leftTriggerPressed;
                     }
                     controllerManager.prevLeftAxisValue = leftAxis;
-                }
-
-                if (_rightController.TryGetFeatureValue(CommonUsages.primary2DAxis, out Vector2 rightAxis))
-                {
-                    if (buttonManager != null)
-                    {
-                        if (rightAxis.x < -0.5)
-                        {
-                            buttonManager.RunButtonNum(1);
-                        }
-                        else if (rightAxis.y > 0.5)
-                        {
-                            buttonManager.RunButtonNum(2);
-                        }
-                        else if (rightAxis.x > 0.5)
-                        {
-                            buttonManager.RunButtonNum(3);
-                        }
-                    }
                     controllerManager.prevRightAxisValue = rightAxis;
                 }
-
                 if (_leftController.TryGetFeatureValue(CommonUsages.primary2DAxisClick, out bool leftStickPressed))
                 {
                     if (leftStickPressed && !controllerManager.prevLeftAxisClickValue && buttonManager != null)
                     {
-                        buttonManager.RunButtonNum(4);
+                        buttonManager.radialMenuExpand();
                     }
                     controllerManager.prevLeftAxisClickValue = leftStickPressed;
                 }
@@ -243,52 +262,12 @@ namespace VSVRMod
                 {
                     if (rightStickPressed && !controllerManager.prevRightAxisClickValue && buttonManager != null)
                     {
-                        buttonManager.RunButtonNum(4);
+                        buttonManager.radialMenuExpand();
                     }
                     controllerManager.prevRightAxisClickValue = rightStickPressed;
                 }
 
-                if (_leftController.TryGetFeatureValue(CommonUsages.primaryButton, out bool leftPrimaryPressed))
-                {
-                    if (leftPrimaryPressed)
-                    {
-                        LoggerInstance.Msg(uiManager == null);
-                    }
-
-                    if (leftPrimaryPressed && !controllerManager.prevLeftPrimaryValue && uiManager != null)
-                    {
-                        uiManager.RunSafeword();
-                    }
-                    controllerManager.prevLeftPrimaryValue = leftPrimaryPressed;
-                }
-
-                if (_rightController.TryGetFeatureValue(CommonUsages.primaryButton, out bool rightPrimaryPressed))
-                {
-                    if (rightPrimaryPressed && !controllerManager.prevRightPrimaryValue && uiManager != null)
-                    {
-                        uiManager.RunSafeword();
-                    }
-                    controllerManager.prevRightPrimaryValue = rightPrimaryPressed;
-                }
-
-                // Hide UI
-                if (_leftController.TryGetFeatureValue(CommonUsages.secondaryButton, out bool leftSecondaryPressed))
-                {
-                    if (leftSecondaryPressed && !controllerManager.prevLeftSecondaryValue && uiManager != null)
-                    {
-                        uiManager.HideUIElements();
-                    }
-                    controllerManager.prevLeftSecondaryValue = leftSecondaryPressed;
-                }
-
-                if (_rightController.TryGetFeatureValue(CommonUsages.secondaryButton, out bool rightSecondaryPressed))
-                {
-                    if (rightSecondaryPressed && !controllerManager.prevRightSecondaryValue && uiManager != null)
-                    {
-                        uiManager.HideUIElements();
-                    }
-                    controllerManager.prevRightSecondaryValue = rightSecondaryPressed;
-                }
+                
             }
 
             if (Input.GetKeyDown(KeyCode.Tab))
@@ -304,7 +283,7 @@ namespace VSVRMod
                     else
                     {
                         UIToggle = true;
-                        canvas.worldCamera = worldCam;
+                        canvas.worldCamera = worldCamera;
                     }
                 }
             }
@@ -338,8 +317,9 @@ namespace VSVRMod
                 if (waitKeyPress)
                 {
                     waitKeyPress = false;
-                    currentUIdepth += 0.1f;
-                    UICanvas.planeDistance = currentUIdepth;
+                    currentUIdepth += 0.05f;
+                    canvas.planeDistance = currentUIdepth;
+                    overlayCanvas.planeDistance = currentUIdepth;
                 }
             }
             else if (Input.GetKeyDown(KeyCode.J) || Input.GetKeyDown(KeyCode.Delete))
@@ -347,8 +327,9 @@ namespace VSVRMod
                 if (waitKeyPress)
                 {
                     waitKeyPress = false;
-                    currentUIdepth -= 0.1f;
-                    UICanvas.planeDistance = currentUIdepth;
+                    currentUIdepth -= 0.05f;
+                    canvas.planeDistance = currentUIdepth;
+                    overlayCanvas.planeDistance = currentUIdepth;
                 }
             }
             else
@@ -401,84 +382,14 @@ namespace VSVRMod
                 recentHeadshakes = 0;
             }
         }
-        private void NnodResult()
-        {
-            foreach (PlayMakerFSM button in nodButtons)
-            {
-                if (button.gameObject.transform.parent.parent.parent.gameObject.activeSelf)
-                {
-                    button.SendEvent("Click");
-                    return;
-                }
-            }
-        }
-        private void HeadshakeResult()
-        {
-            foreach (PlayMakerFSM button in headshakeButtons)
-            {
-                if (button.gameObject.transform.parent.parent.parent.gameObject.activeSelf)
-                {
-                    button.SendEvent("Click");
-                    return;
-                }
-            }
-        }
-
-        private void MoveUIElements(int adjust)
-        {
-            GameObject UIElementToMove = GameObject.Find("GeneralCanvas/EventManager/InstructionBorder");
-            RectTransform UIElementToMoveTransform = UIElementToMove.GetComponent<RectTransform>();
-            UIElementToMoveTransform.anchoredPosition3D = new Vector3(0, 500 + adjust, 0);
-            UIElementToMoveTransform.anchoredPosition = new Vector2(0, 500 + adjust);
-
-            UIElementToMove = GameObject.Find("GeneralCanvas/EventManager/StrokeCount");
-            UIElementToMoveTransform = UIElementToMove.GetComponent<RectTransform>();
-            UIElementToMoveTransform.anchoredPosition3D = new Vector3(0, 500 + adjust, 0);
-            UIElementToMoveTransform.anchoredPosition = new Vector2(0, 500 + adjust);
-
-            UIElementToMove = GameObject.Find("GeneralCanvas/EventManager/BeatManager2");
-            UIElementToMoveTransform = UIElementToMove.GetComponent<RectTransform>();
-            UIElementToMoveTransform.anchoredPosition3D = new Vector3(0, 500 + adjust, 0);
-            UIElementToMoveTransform.anchoredPosition = new Vector2(0, 500 + adjust);
-
-            UIElementToMove = GameObject.Find("GeneralCanvas/EventManager/TimedEvent");
-            UIElementToMoveTransform = UIElementToMove.GetComponent<RectTransform>();
-            UIElementToMoveTransform.anchoredPosition3D = new Vector3(0, 500 + adjust, 0);
-            UIElementToMoveTransform.anchoredPosition = new Vector2(0, 500 + adjust);
-
-            UIElementToMove = GameObject.Find("GeneralCanvas/EventManager/Buttons");
-            UIElementToMoveTransform = UIElementToMove.GetComponent<RectTransform>();
-            UIElementToMoveTransform.anchoredPosition3D = new Vector3(-405, 345 + adjust, 0);
-            UIElementToMoveTransform.anchoredPosition = new Vector2(-405, 345 + adjust);
-
-            UIElementToMove = GameObject.Find("GeneralCanvas/EventManager/ButtonLabels");
-            UIElementToMoveTransform = UIElementToMove.GetComponent<RectTransform>();
-            UIElementToMoveTransform.anchoredPosition3D = new Vector3(-583, 253 + adjust, 0);
-            UIElementToMoveTransform.anchoredPosition = new Vector2(-583, 253 + adjust);
-
-            UIElementToMove = GameObject.Find("GeneralCanvas/EventManager/TradeOfferUI");
-            UIElementToMoveTransform = UIElementToMove.GetComponent<RectTransform>();
-            UIElementToMoveTransform.anchoredPosition3D = new Vector3(0, 1421, 0);
-            UIElementToMoveTransform.anchoredPosition = new Vector2(0, 1421);
-
-            UIElementToMove = GameObject.Find("GeneralCanvas/EventManager/SpinWheelUI");
-            UIElementToMoveTransform = UIElementToMove.GetComponent<RectTransform>();
-            UIElementToMoveTransform.anchoredPosition3D = new Vector3(0, 1200, 0);
-            UIElementToMoveTransform.anchoredPosition = new Vector2(0, 1200);
-
-            UIElementToMove = GameObject.Find("GeneralCanvas/EventManager/Urges");
-            UIElementToMoveTransform = UIElementToMove.GetComponent<RectTransform>();
-            UIElementToMoveTransform.anchoredPosition3D = new Vector3(0, 497 + adjust, 0);
-            UIElementToMoveTransform.anchoredPosition = new Vector2(0, 497 + adjust);
-        }
 
         void ResetCamera()
         {
-            if (world != null)
+            if (worldCameraGameObject != null)
             {
-                world.transform.parent.position = world.transform.position;
-                world.transform.parent.localPosition = -world.transform.localPosition;
-                world.transform.parent.rotation = new Quaternion(0, 0, 0, 0);
+                worldCameraGameObject.transform.parent.position = worldCameraGameObject.transform.position;
+                worldCameraGameObject.transform.parent.localPosition = -worldCameraGameObject.transform.localPosition;
+                worldCameraGameObject.transform.parent.rotation = new Quaternion(0, 0, 0, 0);
             }
         }
     }
