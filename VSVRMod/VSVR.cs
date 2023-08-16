@@ -238,12 +238,18 @@ namespace VSVRMod
 
                     if (_rightController.TryGetFeatureValue(CommonUsages.triggerButton, out bool rightTriggerPressed))
                     {
-                        buttonManager.radialMenuInteract(!controllerManager.prevRightTriggerValue && magnitude > 0.7 && rightTriggerPressed, angle);
+                        if (buttonManager.isRadialMenuOpen())
+                        {
+                            buttonManager.radialMenuInteract(!controllerManager.prevRightTriggerValue && magnitude > 0.7 && rightTriggerPressed, angle);
+                        }
                         controllerManager.prevRightTriggerValue = rightTriggerPressed;
                     }
                     if (_leftController.TryGetFeatureValue(CommonUsages.triggerButton, out bool leftTriggerPressed))
                     {
-                        buttonManager.radialMenuInteract(!controllerManager.prevLeftTriggerValue && magnitude > 0.7 && leftTriggerPressed, angle);
+                        if (buttonManager.isRadialMenuOpen())
+                        {
+                            buttonManager.radialMenuInteract(!controllerManager.prevLeftTriggerValue && magnitude > 0.7 && leftTriggerPressed, angle);
+                        }
                         controllerManager.prevLeftTriggerValue = leftTriggerPressed;
                     }
                     controllerManager.prevLeftAxisValue = leftAxis;

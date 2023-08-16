@@ -126,7 +126,13 @@ namespace VSVRMod
         GameObject arousalMinusButton;
         public void PopulateButtons()
         {
-            GameObject buttonParent = GameObject.Find("GeneralCanvas/EventManager/Buttons");
+            GameObject buttonParent = GameObject.Find("GeneralCanvas/EventManager/Buttons/Positives ------------");
+            foreach (Transform child in buttonParent.transform)
+            {
+                UpdateVSButton(child, "DoneBG/DoneText/Collider", VSButton.VSButtonType.Normal);
+            }
+
+            buttonParent = GameObject.Find("GeneralCanvas/EventManager/Buttons/Negatives ------------");
             foreach (Transform child in buttonParent.transform)
             {
                 UpdateVSButton(child, "DoneBG/DoneText/Collider", VSButton.VSButtonType.Normal);
@@ -312,6 +318,11 @@ namespace VSVRMod
             {
                 exitButtonRadial.GetComponent<PlayMakerFSM>().SendEvent("Click");
             }
+        }
+
+        public bool isRadialMenuOpen()
+        {
+            return level2Ring.activeSelf || level1Ring.activeSelf;
         }
 
         public void UpdateVSButton(Transform child, string colliderPath, VSButton.VSButtonType buttonType)
