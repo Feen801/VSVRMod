@@ -167,6 +167,9 @@ namespace VSVRMod
                     depthSlider.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 500);
                     depthSlider.maxValue = 100;
                     depthSlider.minValue = 0;
+                    //END WIP
+
+                    ResetCamera();
 
                     break;
                 default:
@@ -176,24 +179,6 @@ namespace VSVRMod
 
         public override void OnLateUpdate()
         {
-            if (_leftController.TryGetFeatureValue(CommonUsages.grip, out float leftGrip) && controllerManager != null)
-            {
-                if (leftGrip == 1 && controllerManager.prevLeftGripValue != 1)
-                {
-                    ResetCamera();
-                }
-                controllerManager.prevLeftGripValue = leftGrip;
-            }
-
-            if (_rightController.TryGetFeatureValue(CommonUsages.grip, out float rightGrip) && controllerManager != null)
-            {
-                if (rightGrip == 1 && controllerManager.prevRightGripValue != 1)
-                {
-                    ResetCamera();
-                }
-                controllerManager.prevRightGripValue = rightGrip;
-            }
-
             if (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.RightShift))
             {
                 ResetCamera();
@@ -213,67 +198,49 @@ namespace VSVRMod
             // Used for button actions
             if (controllerManager != null)
             {
-                Vector2 leftAxis;
-                Vector2 rightAxis;
-                Vector2 axis;
-                
-
+                Vector2 axis = getLargerAxisInput();
                 if (buttonManager != null)
                 {
-                    _leftController.TryGetFeatureValue(CommonUsages.primary2DAxis, out leftAxis);
-                    _rightController.TryGetFeatureValue(CommonUsages.primary2DAxis, out rightAxis);
-                    if (leftAxis.magnitude > rightAxis.magnitude)
-                    {
-                        axis = leftAxis;
-                    }
-                    else
-                    {
-                        axis = rightAxis;
-                    }
                     double radians = Math.Atan2(axis.x, axis.y);
                     double magnitude = axis.magnitude;
                     double angle = radians * (180 / Math.PI);
 
                     //LoggerInstance.Msg($"Controller input: {magnitude}, {angle}");
-
-                    if (_rightController.TryGetFeatureValue(CommonUsages.triggerButton, out bool rightTriggerPressed))
+                    try
                     {
-                        if (buttonManager.isRadialMenuOpen())
+                        if (IsButtonPressed(CommonUsages.gripButton, ref controllerManager.prevLeftGripValue, true))
                         {
-                            buttonManager.radialMenuInteract(!controllerManager.prevRightTriggerValue && magnitude > 0.7 && rightTriggerPressed, angle);
+                            currentUIAdjust += (int)(100.0 * Time.deltaTime * axis.y);
+                            uiManager.MoveUIElements(currentUIAdjust);
+                            currentUIdepth += (0.1f * Time.deltaTime * axis.x);
+                            canvas.planeDistance = currentUIdepth;
+                            overlayCanvas.planeDistance = currentUIdepth;
+                            ResetCamera();
                         }
-                        controllerManager.prevRightTriggerValue = rightTriggerPressed;
-                    }
-                    if (_leftController.TryGetFeatureValue(CommonUsages.triggerButton, out bool leftTriggerPressed))
-                    {
-                        if (buttonManager.isRadialMenuOpen())
+                        // LoggerInstance.Msg($"X: {axis.x} Y: {axis.y}, trigger: {IsATriggerPressed()}, stick: {isAStickPressed()}");
+                        if (buttonManager.IsRadialMenuOpen())
                         {
-                            buttonManager.radialMenuInteract(!controllerManager.prevLeftTriggerValue && magnitude > 0.7 && leftTriggerPressed, angle);
+                            buttonManager.RadialMenuInteract(IsButtonPressed(CommonUsages.triggerButton, ref controllerManager.prevLeftTriggerValue, false) && magnitude > 0.7, angle);
                         }
-                        controllerManager.prevLeftTriggerValue = leftTriggerPressed;
+                        else if (buttonManager.StakesUIActive())
+                        {
+                            buttonManager.StakesUIInteract(IsButtonPressed(CommonUsages.triggerButton, ref controllerManager.prevLeftTriggerValue, false), axis.y);
+                            
+                        }
+                        else if (buttonManager.ChoiceUIActive())
+                        {
+                            buttonManager.ChoiceUIInteract(IsButtonPressed(CommonUsages.triggerButton, ref controllerManager.prevLeftTriggerValue, false), axis.x);
+                        }
+                        if (IsButtonPressed(CommonUsages.primary2DAxisClick, ref controllerManager.prevLeftAxisClickValue, false))
+                        {
+                            buttonManager.RadialMenuExpand();
+                        }
                     }
-                    controllerManager.prevLeftAxisValue = leftAxis;
-                    controllerManager.prevRightAxisValue = rightAxis;
-                }
-                if (_leftController.TryGetFeatureValue(CommonUsages.primary2DAxisClick, out bool leftStickPressed))
-                {
-                    if (leftStickPressed && !controllerManager.prevLeftAxisClickValue && buttonManager != null)
+                    catch
                     {
-                        buttonManager.radialMenuExpand();
+                        //ok
                     }
-                    controllerManager.prevLeftAxisClickValue = leftStickPressed;
                 }
-
-                if (_rightController.TryGetFeatureValue(CommonUsages.primary2DAxisClick, out bool rightStickPressed))
-                {
-                    if (rightStickPressed && !controllerManager.prevRightAxisClickValue && buttonManager != null)
-                    {
-                        buttonManager.radialMenuExpand();
-                    }
-                    controllerManager.prevRightAxisClickValue = rightStickPressed;
-                }
-
-                
             }
 
             if (Input.GetKeyDown(KeyCode.Tab))
@@ -397,6 +364,83 @@ namespace VSVRMod
                 worldCameraGameObject.transform.parent.localPosition = -worldCameraGameObject.transform.localPosition;
                 worldCameraGameObject.transform.parent.rotation = new Quaternion(0, 0, 0, 0);
             }
+        }
+
+        Vector2 getLargerAxisInput()
+        {
+            _leftController.TryGetFeatureValue(CommonUsages.primary2DAxis, out Vector2 leftAxis);
+            _rightController.TryGetFeatureValue(CommonUsages.primary2DAxis, out Vector2 rightAxis);
+            if (leftAxis.magnitude > rightAxis.magnitude)
+            {
+                return leftAxis;
+            }
+            else
+            {
+                return rightAxis;
+            }
+        }
+
+        //to be removed?
+        /**
+        bool IsAStickPressed()
+        {
+            if (_rightController.TryGetFeatureValue(CommonUsages.primary2DAxisClick, out bool rightStickPressed) | (_leftController.TryGetFeatureValue(CommonUsages.primary2DAxisClick, out bool leftStickPressed)))
+            {
+                controllerManager.prevRightAxisClickValue = rightStickPressed;
+                controllerManager.prevLeftAxisClickValue = leftStickPressed;
+                return rightStickPressed || leftStickPressed;
+            }
+            return false;
+        }
+
+        bool IsATriggerPressed()
+        {
+            if (_rightController.TryGetFeatureValue(CommonUsages.triggerButton, out bool rightTriggerPressed) | (_leftController.TryGetFeatureValue(CommonUsages.triggerButton, out bool leftTriggerPressed)))
+            {
+                controllerManager.prevRightTriggerValue = rightTriggerPressed;
+                controllerManager.prevLeftTriggerValue = leftTriggerPressed;
+                return rightTriggerPressed || leftTriggerPressed;
+            }
+            return false;
+        }
+
+        bool IsAGripPressed()
+        {
+            if (_rightController.TryGetFeatureValue(CommonUsages.gripButton, out bool rightGripPressed) | (_leftController.TryGetFeatureValue(CommonUsages.gripButton, out bool leftGripPressed)))
+            {
+                if(controllerManager.prevRightGripValue || controllerManager.prevLeftGripValue)
+                {
+                    if (!rightGripPressed && !leftGripPressed)
+                    {
+                        controllerManager.prevRightGripValue = false;
+                        controllerManager.prevLeftGripValue = false;
+                    }
+                    return false;
+                }
+                controllerManager.prevRightGripValue = rightGripPressed;
+                controllerManager.prevLeftGripValue = leftGripPressed;
+                return rightGripPressed || leftGripPressed;
+            }
+            return false;
+        }
+        */
+
+        bool IsButtonPressed(InputFeatureUsage<bool> button, ref bool prevValue, bool allowHeld)
+        {
+            if (_rightController.TryGetFeatureValue(button, out bool rightPressed) | (_leftController.TryGetFeatureValue(button, out bool leftPressed)))
+            {
+                if (prevValue && !allowHeld)
+                {
+                    if (!rightPressed && !leftPressed)
+                    {
+                        prevValue = false;
+                    }
+                    return false;
+                }
+                prevValue = rightPressed || leftPressed;
+                return prevValue;
+            }
+            return false;
         }
     }
 }

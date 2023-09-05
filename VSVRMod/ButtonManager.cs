@@ -37,12 +37,36 @@ namespace VSVRMod
 
     public class ButtonManager
     {
+        GameObject choiceUIObject;
+        GameObject choiceLeftOption;
+        GameObject choiceLeftOptionReact;
+        GameObject choiceRightOption;
+        GameObject choiceRightOptionReact;
+        GameObject favoriteButton;
+        GameObject favoriteButtonReact;
+
         GameObject stakesUIObject;
-        GameObject choiceUIObject;      
+        GameObject stakesTopOption;
+        GameObject stakesMiddleOption;
+        GameObject stakesBottomOption;
+        GameObject stakesTopOptionReact;
+        GameObject stakesMiddleOptionReact;
+        GameObject stakesBottomOptionReact;
 
         // Mappings for all VS buttons
-        List<VSButton> Buttons = new List<VSButton>()
+        // Order matters, first in list takes priority
+        readonly List<VSButton> Buttons = new List<VSButton>()
         {
+            //Opportunities
+            new VSButton() { name = "OpportunityProvoke", buttonNum = 1, headMovement = VSHeadMovement.Nod },
+            new VSButton() { name = "OpportunityTaunt", buttonNum = 1, headMovement = VSHeadMovement.Nod },
+            new VSButton() { name = "OpportunityEntice", buttonNum = 1, headMovement = VSHeadMovement.Nod },
+            new VSButton() { name = "OpportunityPraise", buttonNum = 1, headMovement = VSHeadMovement.Nod },
+
+            //Urges
+            //new VSButton() { name = "IgnoreButton", buttonNum = 1, headMovement = VSHeadMovement.Headshake },
+            //new VSButton() { name = "GiveIn", buttonNum = 1, headMovement = VSHeadMovement.Headshake },
+
             //Positives/left side
             new VSButton() { name = "Thank You3", buttonNum = 1, headMovement = VSHeadMovement.Nod },
             new VSButton() { name = "Accept", buttonNum = 1, headMovement = VSHeadMovement.Nod },
@@ -74,7 +98,10 @@ namespace VSVRMod
             new VSButton() { name = "EdgeCentered", buttonNum = 1, headMovement = VSHeadMovement.Nod },
             //new VSButton() { name = "PoTMercy", buttonNum = 1, headMovement = VSHeadMovement.Nod }, ???
             new VSButton() { name = "MercyNoFavor", buttonNum = 1, headMovement = VSHeadMovement.Nod },
-
+            new VSButton() { name = "GoFaster", buttonNum = 1, headMovement = VSHeadMovement.Nod },
+            new VSButton() { name = "Goon", buttonNum = 1, headMovement = VSHeadMovement.Nod },
+            new VSButton() { name = "Edged", buttonNum = 1, headMovement = VSHeadMovement.Nod },
+            
             //Negatives/right side
             new VSButton() { name = "Disobey", buttonNum = 3, headMovement = VSHeadMovement.Headshake },
             new VSButton() { name = "Disobey2", buttonNum = 3, headMovement = VSHeadMovement.Headshake },
@@ -124,9 +151,20 @@ namespace VSVRMod
 
         GameObject arousalPlusButton;
         GameObject arousalMinusButton;
+
+        GameObject ignoreButton;
+        GameObject giveInButton;
+        GameObject urgeActionDisplay;
         public void PopulateButtons()
         {
-            GameObject buttonParent = GameObject.Find("GeneralCanvas/EventManager/Buttons/Positives ------------");
+            //For opportunities
+            GameObject buttonParent = GameObject.Find("GeneralCanvas/EventManager/Buttons");
+            foreach (Transform child in buttonParent.transform)
+            {
+                UpdateVSButton(child, "DoneBG/DoneText/Collider", VSButton.VSButtonType.Normal);
+            }
+
+            buttonParent = GameObject.Find("GeneralCanvas/EventManager/Buttons/Positives ------------");
             foreach (Transform child in buttonParent.transform)
             {
                 UpdateVSButton(child, "DoneBG/DoneText/Collider", VSButton.VSButtonType.Normal);
@@ -138,19 +176,11 @@ namespace VSVRMod
                 UpdateVSButton(child, "DoneBG/DoneText/Collider", VSButton.VSButtonType.Normal);
             }
 
-            GameObject stakesObject = GameObject.Find("GeneralCanvas/EventManager/StakesUI");
-            stakesUIObject = stakesObject;
-            foreach (Transform child in stakesObject.transform)
-            {
-                UpdateVSButton(child, "Collider", VSButton.VSButtonType.Stakes);
-            }
-
-            GameObject choiceObject = GameObject.Find("GeneralCanvas/EventManager/ChoiceUI");
-            choiceUIObject = choiceObject;
-            foreach (Transform child in choiceObject.transform)
-            {
-                UpdateVSButton(child, "Collider", VSButton.VSButtonType.Choice);
-            }
+            ignoreButton = GameObject.Find("GeneralCanvas/EventManager/Urges/ActionTextContainer/IgnoreButton");
+            //UpdateVSButton(buttonParent.transform, "DoneBG/DoneText/Collider", VSButton.VSButtonType.Normal);
+            giveInButton = GameObject.Find("GeneralCanvas/EventManager/Urges/ActionTextContainer/GiveIn");
+            //UpdateVSButton(buttonParent.transform, "GiveInButton/DoneBG/DoneText/Collider", VSButton.VSButtonType.Normal);
+            urgeActionDisplay = GameObject.Find("GeneralCanvas/EventManager/Urges/ActionTextContainer");
 
             radialMenuButton1 = GameObject.Find("GeneralCanvas/EventManager/NewButtons/Center/Circle");
             radialMenuButton2 = GameObject.Find("GeneralCanvas/EventManager/NewButtons/Center/Level1/OtherButtons/Grow");
@@ -180,9 +210,28 @@ namespace VSVRMod
 
             arousalPlusButton = GameObject.Find("GeneralCanvas/EventManager/NewButtons/Center/Level1/ArousalMeter/Overlays/Plus");
             arousalMinusButton = GameObject.Find("GeneralCanvas/EventManager/NewButtons/Center/Level1/ArousalMeter/Overlays/Minus");
+
+
+            stakesUIObject = GameObject.Find("GeneralCanvas/EventManager/StakesUI");
+            stakesTopOption = GameObject.Find("GeneralCanvas/EventManager/StakesUI/BG1");
+            stakesMiddleOption = GameObject.Find("GeneralCanvas/EventManager/StakesUI/BG2");
+            stakesBottomOption = GameObject.Find("GeneralCanvas/EventManager/StakesUI/BG3");
+            stakesTopOptionReact = GameObject.Find("GeneralCanvas/EventManager/StakesUI/BG1");
+            stakesMiddleOptionReact = GameObject.Find("GeneralCanvas/EventManager/StakesUI/BG2");
+            stakesBottomOptionReact = GameObject.Find("GeneralCanvas/EventManager/StakesUI/BG3");
+
+
+            choiceUIObject = GameObject.Find("GeneralCanvas/EventManager/ChoiceUI");
+            choiceLeftOption = GameObject.Find("GeneralCanvas/EventManager/ChoiceUI/Choice1");
+            choiceLeftOptionReact = GameObject.Find("GeneralCanvas/EventManager/ChoiceUI/Choice1/Image (1)/Borders/LightBorder");
+            choiceRightOption = GameObject.Find("GeneralCanvas/EventManager/ChoiceUI/Choice2");
+            choiceRightOptionReact = GameObject.Find("GeneralCanvas/EventManager/ChoiceUI/Choice2/Image (1)/Borders/LightBorder");
+
+            favoriteButton = GameObject.Find("GeneralCanvas/EventManager/Buttons/FavoriteHeart");
+            favoriteButtonReact = GameObject.Find("GeneralCanvas/EventManager/Buttons/FavoriteHeart/DoneBG/DoneText/Collider/ButtonPressReact1");
         }
 
-        public void radialMenuInteract(bool isClick, double angle)
+        public void RadialMenuInteract(bool isClick, double angle)
         {
             int level = 0;
             if(level1Ring.activeSelf)
@@ -304,7 +353,7 @@ namespace VSVRMod
             }
         }
 
-        public void radialMenuExpand()
+        public void RadialMenuExpand()
         {
             if(!level2Ring.activeSelf && level1Ring.activeSelf)
             {
@@ -320,7 +369,7 @@ namespace VSVRMod
             }
         }
 
-        public bool isRadialMenuOpen()
+        public bool IsRadialMenuOpen()
         {
             return level2Ring.activeSelf || level1Ring.activeSelf;
         }
@@ -345,63 +394,19 @@ namespace VSVRMod
             }
         }
 
-        public void RunButtonNum(int index)
-        {
-            if (choiceUIObject.activeSelf || stakesUIObject.activeSelf)
-            {
-                if (index == 4)
-                {
-                    VSButton selectedButton = Buttons.Find(p => p.buttonType == VSButton.VSButtonType.Normal && p.buttonObjects.Any(q => q.buttonObject.activeSelf));
-
-                    if (selectedButton != null)
-                    {
-                        PlayMakerFSM activeFsm = selectedButton?.buttonObjects.Find(p => p.buttonObject.activeSelf).buttonFsm;
-                        activeFsm.SendEvent("Click");
-                    }
-                } 
-                else if (choiceUIObject.activeSelf)
-                {
-                    VSButton selectedButton = Buttons.Find(
-                        p => 
-                            p.buttonNum == index &&
-                            (p.buttonType == VSButton.VSButtonType.Choice)
-                    );
-
-                    if (selectedButton != null)
-                    {
-                        PlayMakerFSM activeFsm = selectedButton?.buttonObjects.Find(p => p.buttonObject.activeSelf).buttonFsm;
-                        activeFsm.SendEvent("Click");
-                    }
-                }
-                else if (stakesUIObject.activeSelf)
-                {
-                    VSButton selectedButton = Buttons.Find(
-                        p =>
-                            p.buttonNum == index &&
-                            (p.buttonType == VSButton.VSButtonType.Stakes)
-                    );
-
-                    if (selectedButton != null)
-                    {
-                        PlayMakerFSM activeFsm = selectedButton?.buttonObjects.Find(p => p.buttonObject.activeSelf).buttonFsm;
-                        activeFsm.SendEvent("Click");
-                    }
-                }
-            } 
-            else
-            {
-                VSButton selectedButton = Buttons.Find(p => p.buttonNum == index && p.buttonObjects.Any(q => q.buttonObject.activeSelf));
-
-                if (selectedButton != null)
-                {
-                    PlayMakerFSM activeFsm = selectedButton?.buttonObjects.Find(p => p.buttonObject.activeSelf).buttonFsm;
-                    activeFsm.SendEvent("Click");
-                }
-            }
-        }
-
         public void RunButtonMovement(VSHeadMovement movement)
         {
+            if(urgeActionDisplay.activeSelf)
+            {
+                if(movement == VSHeadMovement.Headshake)
+                {
+                    ignoreButton.GetComponent<PlayMakerFSM>().SendEvent("Click");
+                }
+                else if (movement == VSHeadMovement.Nod)
+                {
+                    giveInButton.GetComponent<PlayMakerFSM>().SendEvent("Click");
+                }
+            }
             VSButton selectedButton = Buttons.Find(p => p.headMovement == movement && p.buttonObjects.Any(q => q.buttonObject.activeSelf));
             PlayMakerFSM activeFsm = selectedButton?.buttonObjects.Find(p => p.buttonObject.activeSelf).buttonFsm;
             
@@ -409,6 +414,90 @@ namespace VSVRMod
             {
                 activeFsm.SendEvent("Click");
             }
+        }
+
+        public void StakesUIInteract(bool isClick, double height)
+        {
+            if(height > 0.3)
+            {
+                stakesTopOptionReact.SetActive(true);
+                stakesMiddleOptionReact.SetActive(false);
+                stakesBottomOptionReact.SetActive(false);
+                if (isClick)
+                {
+                    stakesTopOption.transform.Find("Collider").GetComponent<PlayMakerFSM>().SendEvent("Click");
+                    RunButtonMovement(VSHeadMovement.Nod);
+                }
+            }
+            else if (height > -0.3)
+            {
+                stakesTopOptionReact.SetActive(false);
+                stakesMiddleOptionReact.SetActive(true);
+                stakesBottomOptionReact.SetActive(false);
+                if (isClick)
+                {
+                    stakesMiddleOption.transform.Find("Collider").GetComponent<PlayMakerFSM>().SendEvent("Click");
+                    RunButtonMovement(VSHeadMovement.Nod);
+                }
+            }
+            else
+            {
+                stakesTopOptionReact.SetActive(false);
+                stakesMiddleOptionReact.SetActive(false);
+                stakesBottomOptionReact.SetActive(true);
+                if (isClick)
+                {
+                    stakesBottomOption.transform.Find("Collider").GetComponent<PlayMakerFSM>().SendEvent("Click");
+                    RunButtonMovement(VSHeadMovement.Nod);
+                }
+            }
+        }
+
+        public bool StakesUIActive()
+        {
+            return stakesUIObject.activeSelf;
+        }
+
+        public void ChoiceUIInteract(bool isClick, double width)
+        {
+            if (width > 0.3)
+            {
+                choiceRightOptionReact.SetActive(true);
+                favoriteButtonReact.SetActive(false);
+                choiceLeftOptionReact.SetActive(false);
+                if (isClick)
+                {
+                    choiceRightOption.transform.Find("Collider").GetComponent<PlayMakerFSM>().SendEvent("Click");
+                    RunButtonMovement(VSHeadMovement.Nod);
+                }
+            }
+            else if (width > -0.3)
+            {
+                choiceRightOptionReact.SetActive(false);
+                favoriteButtonReact.SetActive(true);
+                choiceLeftOptionReact.SetActive(false);
+                if (isClick && favoriteButton.activeSelf)
+                {
+                    favoriteButton.transform.Find("DoneBG/DoneText/Collider").GetComponent<PlayMakerFSM>().SendEvent("Click");
+                    RunButtonMovement(VSHeadMovement.Nod);
+                }
+            }
+            else
+            {
+                favoriteButtonReact.SetActive(false);
+                stakesMiddleOptionReact.SetActive(false);
+                choiceLeftOptionReact.SetActive(true);
+                if (isClick)
+                {
+                    choiceLeftOption.transform.Find("Collider").GetComponent<PlayMakerFSM>().SendEvent("Click");
+                    RunButtonMovement(VSHeadMovement.Nod);
+                }
+            }
+        }
+
+        public bool ChoiceUIActive()
+        {
+            return choiceUIObject.activeSelf;
         }
     }
 }
