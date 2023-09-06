@@ -406,6 +406,7 @@ namespace VSVRMod
                 {
                     giveInButton.GetComponent<PlayMakerFSM>().SendEvent("Click");
                 }
+                return;
             }
             VSButton selectedButton = Buttons.Find(p => p.headMovement == movement && p.buttonObjects.Any(q => q.buttonObject.activeSelf));
             PlayMakerFSM activeFsm = selectedButton?.buttonObjects.Find(p => p.buttonObject.activeSelf).buttonFsm;
